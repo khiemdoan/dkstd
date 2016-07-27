@@ -1,7 +1,6 @@
-﻿
-// author: Khiêm Đoàn Hoà
-// created: 2016-07-06
-// modified: 2016-07-06
+﻿// author:		Khiêm Đoàn Hoà
+// created:		2016-07-06
+// modified:	2016-07-06
 
 #ifndef _DKSTD_TEXTFILE_
 #define _DKSTD_TEXTFILE_

@@ -1,7 +1,6 @@
-﻿
-// author: Khiêm Đoàn Hoà
-// created: 2016-03-19
-// modified: 2016-07-13
+﻿// author:		Khiêm Đoàn Hoà
+// created:		2016-03-19
+// modified:	2016-07-27
 
 #ifndef _DKSTD_STRING_
 #define _DKSTD_STRING_
@@ -16,6 +15,11 @@ namespace dkstd {
 	std::wstring s2ws(std::string str);
 	std::string ws2s(std::wstring wstr);
 
+	template<typename ...Args>
+	std::string format_string(const std::string& format, Args ...args);
+	template<typename ...Args>
+	std::wstring format_string(const std::wstring& format, Args ...args);
+
 	namespace string {
 
 		template<typename charT>
@@ -27,7 +31,7 @@ namespace dkstd {
 		std::basic_string<charT> to_upper(std::basic_string<charT> sInput);
 		template<typename charT>
 		std::basic_string<charT> to_upper(charT* pInput);
-	}	
+	}
 }
 
 // convert std::string to std::wstring
@@ -46,6 +50,28 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 	using convert_type = std::codecvt_utf8<wchar_t>;
 	std::wstring_convert<convert_type, wchar_t> converter;
 	return converter.to_bytes(wstr);
+}
+
+// format string
+// KhiemDH - 2016-07-27
+template<typename ...Args>
+inline std::string dkstd::format_string(const std::string & format, Args ...args)
+{
+	size_t size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;	// Extra space for '\0'
+	std::unique_ptr<char[]> buf(new char[size]);
+	std::snprintf(buf.get(), size, format.c_str(), args...);
+	return std::string(buf.get(), buf.get() + size - 1);							// We don't want the '\0' inside
+}
+
+// format string
+// KhiemDH - 2016-07-27
+template<typename ...Args>
+inline std::wstring dkstd::format_string(const std::wstring & format, Args ...args)
+{
+	size_t size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;	// Extra space for '\0'
+	std::unique_ptr<wchar_t[]> buf(new wchar_t[size]);
+	std::swprintf(buf.get(), size, format.c_str(), args...);
+	return std::wstring(buf.get(), buf.get() + size - 1);					// We don't want the '\0' inside
 }
 
 // convert to lower string
@@ -94,4 +120,4 @@ inline std::basic_string<charT> dkstd::string::to_upper(charT * pInput)
 	return sOutput;
 }
 
-#endif // !_DK_STRING_H_
+#endif // !_DKSTD_STRING_
