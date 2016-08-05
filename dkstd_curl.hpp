@@ -50,29 +50,29 @@ namespace dkstd
 		std::string			m_sUrl;
 		std::string			m_sContent;
 		std::string			m_sLocation;
-		static size_t		n_instance;
+		static size_t		m_nInstance;
 
 		static size_t write_data(char * contents, size_t size, size_t nmemb, std::string * stream);
 		static size_t write_file(char * contents, size_t size, size_t nmemb, std::ofstream * file);
 	};
 }
 
-size_t dkstd::curl::n_instance = 0;
+size_t dkstd::curl::m_nInstance = 0;
 
 inline dkstd::curl::curl()
 {
-	if (n_instance == 0) {
+	if (m_nInstance == 0) {
 		curl_global_init(CURL_GLOBAL_ALL);
-		n_instance++;
+		m_nInstance++;
 	}
 }
 
 inline dkstd::curl::~curl()
 {
-	if (n_instance == 1) {
+	if (m_nInstance == 1) {
 		curl_global_cleanup();
 	}
-	n_instance--;
+	m_nInstance--;
 }
 
 inline void dkstd::curl::set_url(std::wstring sUrl)
@@ -130,8 +130,8 @@ inline bool dkstd::curl::send_request()
 	m_sLocation = "";
 
 	// header
-	for (auto i : m_mapHeaders) {
-		std::string s = i.first + ":" + i.second;
+	for (auto header : m_mapHeaders) {
+		std::string s = header.first + ":" + header.second;
 		chunk = curl_slist_append(chunk, s.c_str());
 	}
 	
