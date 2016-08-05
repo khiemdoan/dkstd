@@ -178,42 +178,17 @@ inline std::string dkstd::curl::get_content()
 
 inline bool dkstd::curl::download_to_file(std::wstring file_path)
 {
-	CURL				*curl_handle = nullptr;
-	struct curl_slist	*chunk = NULL;
-	CURLcode			res = CURLE_OK;
-	bool				bReturn = false;
+	bool		bReturn = false;
+	bool		bRequest = false;
 
-	m_sContent = dkstd::ws2s(file_path);
+	bRequest = send_request();
 	std::ofstream file(file_path, std::fstream::out | std::fstream::binary);
+	if (bRequest == true && file.good() == true) {
 
-	if (file.good() == true) {
-		curl_handle = curl_easy_init();
-
-		// header
-		for (auto i : m_mapHeaders) {
-			std::string s = i.first + ":" + i.second;
-			chunk = curl_slist_append(chunk, s.c_str());
-		}
-
-		curl_easy_setopt(curl_handle, CURLOPT_URL, m_sUrl.c_str());
-		curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, chunk);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_file);
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &file);		
-
-		res = curl_easy_perform(curl_handle);
-		if (res == CURLE_OK) {
-			bReturn = true;
-		}
-
-		char *location;
-		res = curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &location);
-		if ((res == CURLE_OK) && location) {
-			m_sLocation = location;
-		}
-
-		curl_easy_cleanup(curl_handle);
-		curl_slist_free_all(chunk);
+		file << m_sContent;
+		m_sContent = "";
 		file.close();
+		bReturn = true;
 	}
 
 	return bReturn;
