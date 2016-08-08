@@ -13,8 +13,12 @@
 #include "curl/curl.h"
 
 #ifdef _WIN32
-#pragma comment (lib, "curl/libcurl_a.lib")
 #pragma comment (linker, "/NODEFAULTLIB:libcmt.lib")
+#ifdef _DEBUG
+#pragma comment (lib, "curl/libcurl_a_debug.lib")
+#else
+#pragma comment (lib, "curl/libcurl_a.lib")
+#endif
 #endif
 
 #include "dkstd_string.hpp"
@@ -25,22 +29,24 @@ namespace dkstd
 	{
 	public:
 		curl();
+		curl(std::wstring sUrl);
+		curl(std::string sUrl);
 		~curl();
 
 		void set_url(std::wstring sUrl);
 		void set_url(std::string sUrl);
-		void add_header(std::wstring name, std::wstring value);
-		void add_header(std::string name, std::string value);
-		void add_data(std::wstring field, std::wstring value);
-		void add_data(std::string field, std::string value);
-		void add_file(std::wstring field, std::wstring file_path);
-		void add_file(std::string field, std::string file_path);
+		void add_header(std::wstring sName, std::wstring sValue);
+		void add_header(std::string sName, std::string sValue);
+		void add_data(std::wstring sField, std::wstring sValue);
+		void add_data(std::string sField, std::string sValue);
+		void add_file(std::wstring sField, std::wstring sFilePath);
+		void add_file(std::string sField, std::string sFilePath);
 
 		bool send_request();
 
 		std::string get_content();
-		bool download_to_file(std::wstring file_path);
-		bool download_to_file(std::string file_path);
+		bool download_to_file(std::wstring sFilePath);
+		bool download_to_file(std::string sFilePath);
 		std::string get_redirect();
 
 	private:
@@ -67,6 +73,17 @@ inline dkstd::curl::curl()
 	}
 }
 
+inline dkstd::curl::curl(std::wstring sUrl)
+{
+	curl(dkstd::ws2s(sUrl));
+}
+
+inline dkstd::curl::curl(std::string sUrl)
+{
+	curl();
+	m_sUrl = sUrl;
+}
+
 inline dkstd::curl::~curl()
 {
 	if (m_nInstance == 1) {
@@ -85,41 +102,41 @@ inline void dkstd::curl::set_url(std::string sUrl)
 	m_sUrl = sUrl;
 }
 
-inline void dkstd::curl::add_header(std::wstring name, std::wstring value)
+inline void dkstd::curl::add_header(std::wstring sName, std::wstring sValue)
 {
-	return this->add_header(dkstd::ws2s(name), dkstd::ws2s(value));
+	return this->add_header(dkstd::ws2s(sName), dkstd::ws2s(sValue));
 }
 
-inline void dkstd::curl::add_header(std::string name, std::string value)
+inline void dkstd::curl::add_header(std::string sName, std::string sValue)
 {
-	m_mapHeaders[name] = value;
+	m_mapHeaders[sName] = sValue;
 }
 
-inline void dkstd::curl::add_data(std::wstring field, std::wstring value)
+inline void dkstd::curl::add_data(std::wstring sField, std::wstring sValue)
 {
-	return this->add_data(dkstd::ws2s(field), dkstd::ws2s(value));
+	return this->add_data(dkstd::ws2s(sField), dkstd::ws2s(sValue));
 }
 
-inline void dkstd::curl::add_data(std::string field, std::string value)
+inline void dkstd::curl::add_data(std::string sField, std::string sValue)
 {
-	m_mapData[field] = value;
+	m_mapData[sField] = sValue;
 }
 
-inline void dkstd::curl::add_file(std::wstring field, std::wstring file_path)
+inline void dkstd::curl::add_file(std::wstring sField, std::wstring sFilePath)
 {
-	return this->add_file(dkstd::ws2s(field), dkstd::ws2s(file_path));
+	return this->add_file(dkstd::ws2s(sField), dkstd::ws2s(sFilePath));
 }
 
-inline void dkstd::curl::add_file(std::string field, std::string file_path)
+inline void dkstd::curl::add_file(std::string sField, std::string sFilePath)
 {
-	m_mapFiles[field] = file_path;
+	m_mapFiles[sField] = sFilePath;
 }
 
 inline bool dkstd::curl::send_request()
 {
 	CURL					*curl_handle = nullptr;
 	CURLcode				res = CURLE_OK;
-	
+
 	struct curl_slist		*chunk = NULL;
 	struct curl_httppost	*post = NULL;
 	struct curl_httppost	*last = NULL;
@@ -134,7 +151,7 @@ inline bool dkstd::curl::send_request()
 		std::string s = header.first + ":" + header.second;
 		chunk = curl_slist_append(chunk, s.c_str());
 	}
-	
+
 	// data
 	for (auto i : m_mapData) {
 		curl_formadd(&post, &last, CURLFORM_COPYNAME, i.first.c_str(),
@@ -176,13 +193,13 @@ inline std::string dkstd::curl::get_content()
 	return m_sContent;
 }
 
-inline bool dkstd::curl::download_to_file(std::wstring file_path)
+inline bool dkstd::curl::download_to_file(std::wstring sFilePath)
 {
 	bool		bReturn = false;
 	bool		bRequest = false;
 
 	bRequest = send_request();
-	std::ofstream file(file_path, std::fstream::out | std::fstream::binary);
+	std::ofstream file(sFilePath, std::fstream::out | std::fstream::binary);
 	if (bRequest == true && file.good() == true) {
 
 		file << m_sContent;
@@ -194,9 +211,9 @@ inline bool dkstd::curl::download_to_file(std::wstring file_path)
 	return bReturn;
 }
 
-inline bool dkstd::curl::download_to_file(std::string file_path)
+inline bool dkstd::curl::download_to_file(std::string sFilePath)
 {
-	return download_to_file(dkstd::s2ws(file_path));
+	return download_to_file(dkstd::s2ws(sFilePath));
 }
 
 inline std::string dkstd::curl::get_redirect()
