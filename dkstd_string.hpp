@@ -1,6 +1,6 @@
 ﻿// author:		Khiêm Đoàn Hoà
 // created:		2016-03-19
-// modified:	2016-07-27
+// modified:	2016-08-14
 
 #ifndef _DKSTD_STRING_
 #define _DKSTD_STRING_
@@ -9,6 +9,8 @@
 #include "codecvt"
 #include "algorithm"
 #include "memory"
+#include "stdexcept"
+#include "locale"
 
 namespace dkstd {
 
@@ -40,7 +42,12 @@ inline std::wstring dkstd::s2ws(std::string str)
 {
 	using convert_type = std::codecvt_utf8<wchar_t>;
 	std::wstring_convert<convert_type, wchar_t> converter;
-	return converter.from_bytes(str);
+	std::wstring sOutput;
+	try {
+		sOutput = converter.from_bytes(str);
+	}
+	catch (const std::range_error e) {}
+	return sOutput;
 }
 
 // convert std::wstring to std::string
@@ -49,7 +56,12 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 {
 	using convert_type = std::codecvt_utf8<wchar_t>;
 	std::wstring_convert<convert_type, wchar_t> converter;
-	return converter.to_bytes(wstr);
+	std::string sOutput;
+	try {
+		sOutput = converter.to_bytes(wstr);
+	}
+	catch (const std::range_error e) {}
+	return sOutput;
 }
 
 // format string
