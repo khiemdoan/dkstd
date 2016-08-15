@@ -60,15 +60,24 @@ inline dkstd::textfile::~textfile()
 // KhiemDH - 2016-07-06
 inline void dkstd::textfile::open(std::string sFilePath)
 {
-	this->close();
-	m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+#ifdef _WIN32
+    this->open(dkstd::s2ws(sFilePath));
+#else
+    this->close();
+    m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+#endif
 }
 
 // open file
 // KhiemDH - 2016-07-06
 inline void dkstd::textfile::open(std::wstring sFilePath)
 {
-	this->open(dkstd::ws2s(sFilePath));
+#ifdef _WIN32
+    this->close();
+    m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+#else
+    this->open(dkstd::ws2s(sFilePath));
+#endif
 }
 
 // close file
