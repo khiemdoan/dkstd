@@ -1,6 +1,6 @@
-﻿// author:		Khiêm Đoàn Hoà
-// created:		2016-07-06
-// modified:	2016-07-06
+// author:      Khiêm Đoàn Hoà
+// created:     2016-07-06
+// modified:    2016-08-15
 
 #ifndef _DKSTD_TEXTFILE_
 #define _DKSTD_TEXTFILE_
@@ -11,88 +11,88 @@
 
 namespace dkstd {
 
-	// textfile is used to read and write file by utf-8
-	// KhiemDH - 2016-07-06
-	class textfile
-	{
-	public:
-		textfile() {};
-		textfile(std::string sFilePath);
-		textfile(std::wstring sFilePath);
-		~textfile();
+    // textfile is used to read and write file by utf-8
+    // KhiemDH - 2016-07-06
+    class textfile
+    {
+    public:
+        textfile() {};
+        textfile(std::string sFilePath);
+        textfile(std::wstring sFilePath);
+        ~textfile();
 
-		void	open(std::string sFilePath);
-		void	open(std::wstring sFilePath);
-		void	close();
-		
-		void	write_line(std::string sContent);
-		void	write_line(std::wstring sContent);
+        void	open(std::string sFilePath);
+        void	open(std::wstring sFilePath);
+        void	close();
+        
+        void	write_line(std::string sContent);
+        void	write_line(std::wstring sContent);
 
-		std::vector<std::wstring>	get_all_lines();
+        std::vector<std::wstring>	get_all_lines();
 
-	private:
-		std::fstream	m_file;
-	};
+    private:
+        std::fstream	m_file;
+    };
 }
 
 // constructor
 // KhiemDH - 2016-07-06
 inline dkstd::textfile::textfile(std::string sFilePath)
 {
-	this->open(sFilePath);
+    this->open(sFilePath);
 }
 
 // constructor
 // KhiemDH - 2016-07-06
 inline dkstd::textfile::textfile(std::wstring sFilePath)
 {
-	this->open(sFilePath);
+    this->open(sFilePath);
 }
 
 // destructor
 // KhiemDH - 2016-07-06
 inline dkstd::textfile::~textfile()
 {
-	this->close();
+    this->close();
 }
 
 // open file
 // KhiemDH - 2016-07-06
 inline void dkstd::textfile::open(std::string sFilePath)
 {
-	this->open(dkstd::s2ws(sFilePath));
+	this->close();
+	m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
 }
 
 // open file
 // KhiemDH - 2016-07-06
 inline void dkstd::textfile::open(std::wstring sFilePath)
 {
-	this->close();
-	m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+	this->open(dkstd::ws2s(sFilePath));
 }
 
 // close file
-// KhiemDH - 2016-07-06
+// KhiemDH - 2016-08-15
 inline void dkstd::textfile::close()
 {
-	if (m_file.is_open() == true) {
-		m_file.close();
-	}
+    if (m_file.is_open()) {
+        m_file.close();
+    }
 }
 
 // write a line to end file
 // input: ANSI string
-// KhiemDH - 2016-07-06
+// KhiemDH - 2016-08-15
 inline void dkstd::textfile::write_line(std::string sContent)
 {
-	if (m_file.good() == true) {
-		m_file.seekp(0, std::fstream::end);
-		if (m_file.tellg() != std::streampos::fpos(0)) {
-			sContent = "\n" + sContent;
-		}
-		m_file << sContent;
-		m_file.clear();		// clear the error flag
-	}
+    if (m_file.good()) {
+        m_file.seekp(0, std::fstream::end);
+        if (m_file.tellg() != std::streampos::fpos(0)) {
+            sContent = "\n" + sContent;
+        }
+        m_file << sContent;
+        m_file.clear();		// clear the error flag
+    }
 }
 
 // write a line to end file
@@ -100,26 +100,29 @@ inline void dkstd::textfile::write_line(std::string sContent)
 // KhiemDH - 2016-07-06
 inline void dkstd::textfile::write_line(std::wstring sContent)
 {
-	this->write_line(dkstd::ws2s(sContent));
+    this->write_line(dkstd::ws2s(sContent));
 }
 
 // read file to std::vector
-// KhiemDH - 2016-07-06
+// KhiemDH - 2016-08-15
 inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
 {
-	std::string		sLine;
-	std::vector<std::wstring>	vectorContents;
+    std::string		sLine;
+    std::vector<std::wstring>	vectorContents;
 
-	if (m_file.good() == true) {
-		m_file.seekg(0, std::fstream::beg);
-		while (m_file.eof() == false) {
-			std::getline(m_file, sLine);
-			vectorContents.push_back(dkstd::s2ws(sLine));
-		}
-		m_file.clear();
-	}
+    if (m_file.good()) {
+        m_file.seekg(0, std::fstream::beg);
+        while (!m_file.eof()) {
+            std::getline(m_file, sLine);
+            if (sLine.back() == '\r') {
+                sLine.pop_back();
+            }
+            vectorContents.push_back(dkstd::s2ws(sLine));
+        }
+        m_file.clear();
+    }
 
-	return vectorContents;
+    return vectorContents;
 }
 
 #endif // !_DKSTD_TEXTFILE_
