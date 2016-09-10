@@ -1,6 +1,6 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2016-08-15
+// modified:    2016-09-10
 
 #ifndef _DKSTD_STRING_
 #define _DKSTD_STRING_
@@ -33,6 +33,11 @@ namespace dkstd {
         std::basic_string<charT> to_upper(std::basic_string<charT> sInput);
         template<typename charT>
         std::basic_string<charT> to_upper(charT* pInput);
+
+        template<typename charT>
+        int icompare(std::basic_string<charT> sL, std::basic_string<charT> sR);
+        template<typename charT>
+        int icompare(charT* pL, charT* pR);
     }
 }
 
@@ -124,6 +129,26 @@ inline std::basic_string<charT> dkstd::string::to_upper(charT * pInput)
 {
     std::basic_string<charT> sInput(pInput);
     return dkstd::string::to_upper(sInput);
+}
+
+// case insensitive string compare
+// KhiemDH - 2016-09-10
+template<typename charT>
+int dkstd::string::icompare(std::basic_string<charT> sL, std::basic_string<charT> sR)
+{
+    sL = dkstd::string::to_lower(sL);
+    sR = dkstd::string::to_lower(sR);
+    return sL.compare(sR);
+}
+
+// case insensitive string compare
+// KhiemDH - 2016-09-10
+template<typename charT>
+int dkstd::string::icompare(charT * pL, charT * pR)
+{
+    std::basic_string<charT> sL(pL);
+    std::basic_string<charT> sR(pR);
+    return 0;
 }
 
 #endif // !_DKSTD_STRING_
