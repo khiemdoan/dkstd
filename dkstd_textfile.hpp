@@ -1,6 +1,6 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-07-06
-// modified:    2016-08-15
+// modified:    2016-09-24
 
 #ifndef _DKSTD_TEXTFILE_
 #define _DKSTD_TEXTFILE_
@@ -9,7 +9,8 @@
 #include "vector"
 #include "dkstd_string.hpp"
 
-namespace dkstd {
+namespace dkstd
+{
 
     // textfile is used to read and write file by utf-8
     // KhiemDH - 2016-07-06
@@ -19,10 +20,14 @@ namespace dkstd {
         textfile() {};
         textfile(std::string sFilePath);
         textfile(std::wstring sFilePath);
+		textfile(std::string sFilePath, std::ios_base::openmode mode);
+		textfile(std::wstring sFilePath, std::ios_base::openmode mode);
         ~textfile();
 
         void	open(std::string sFilePath);
         void	open(std::wstring sFilePath);
+		void	open(std::string sFilePath, std::ios_base::openmode mode);
+		void	open(std::wstring sFilePath, std::ios_base::openmode mode);
         void	close();
         
         template<typename ...Args>
@@ -32,23 +37,45 @@ namespace dkstd {
 
         std::vector<std::wstring>	get_all_lines();
 
+		void clear();
+
     private:
-        std::fstream	m_file;
+        std::fstream		m_file;
+		std::ios::openmode	m_mode;
+#ifdef _WIN32
+		std::wstring		m_sFilePath;
+#else
+		std::string			m_sFilePath;
+#endif
     };
 }
 
-// constructor
+// constructor with file path
 // KhiemDH - 2016-07-06
 inline dkstd::textfile::textfile(std::string sFilePath)
 {
     this->open(sFilePath);
 }
 
-// constructor
+// constructor with file path
 // KhiemDH - 2016-07-06
 inline dkstd::textfile::textfile(std::wstring sFilePath)
 {
     this->open(sFilePath);
+}
+
+// constructor with file path and open mode
+// KhiemDH - 2016-09-24
+inline dkstd::textfile::textfile(std::string sFilePath, std::ios_base::openmode mode)
+{
+	this->open(sFilePath, mode);
+}
+
+// constructor with file path and open mode
+// KhiemDH - 2016-09-24
+inline dkstd::textfile::textfile(std::wstring sFilePath, std::ios_base::openmode mode)
+{
+	this->open(sFilePath, mode);
 }
 
 // destructor
@@ -59,26 +86,44 @@ inline dkstd::textfile::~textfile()
 }
 
 // open file
-// KhiemDH - 2016-07-06
+// KhiemDH - 2016-09-24
 inline void dkstd::textfile::open(std::string sFilePath)
 {
-#ifdef _WIN32
-    this->open(dkstd::s2ws(sFilePath));
-#else
-    this->close();
-    m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
-#endif
+	this->open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
 }
 
 // open file
-// KhiemDH - 2016-07-06
+// KhiemDH - 2016-09-24
 inline void dkstd::textfile::open(std::wstring sFilePath)
 {
+	this->open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+}
+
+// open file with custom mode
+// KhiemDH - 2016-09-24
+inline void dkstd::textfile::open(std::string sFilePath, std::ios_base::openmode mode)
+{
 #ifdef _WIN32
-    this->close();
-    m_file.open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+	this->open(dkstd::s2ws(sFilePath), mode);
 #else
-    this->open(dkstd::ws2s(sFilePath));
+	this->close();
+	m_file.open(sFilePath, mode);
+	m_sFilePath = sFilePath;
+	m_mode = mode;
+#endif
+}
+
+// open file with custom mode
+// KhiemDH - 2016-09-24
+inline void dkstd::textfile::open(std::wstring sFilePath, std::ios_base::openmode mode)
+{
+#ifdef _WIN32
+	this->close();
+	m_file.open(sFilePath, mode);
+	m_sFilePath = sFilePath;
+	m_mode = mode;
+#else
+	this->open(dkstd::ws2s(sFilePath), mode);
 #endif
 }
 
@@ -138,6 +183,15 @@ inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
     }
 
     return vectorContents;
+}
+
+// clear text in file
+inline void dkstd::textfile::clear()
+{
+	this->close();
+	m_file.open(m_sFilePath, std::fstream::out | std::fstream::trunc);
+	this->close();
+	this->open(m_sFilePath, m_mode);
 }
 
 #endif // !_DKSTD_TEXTFILE_

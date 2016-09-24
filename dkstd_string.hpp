@@ -1,6 +1,6 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2016-09-10
+// modified:    2016-09-24
 
 #ifndef _DKSTD_STRING_
 #define _DKSTD_STRING_
@@ -12,8 +12,8 @@
 #include "stdexcept"
 #include "locale"
 
-namespace dkstd {
-
+namespace dkstd
+{
     std::wstring s2ws(std::string str);
     std::string ws2s(std::wstring wstr);
 
@@ -22,8 +22,8 @@ namespace dkstd {
     template<typename ...Args>
     std::wstring format_string(const std::wstring& format, Args ...args);
 
-    namespace string {
-
+    namespace string
+    {
         template<typename charT>
         std::basic_string<charT> to_lower(std::basic_string<charT> sInput);
         template<typename charT>
@@ -38,6 +38,11 @@ namespace dkstd {
         int icompare(std::basic_string<charT> sL, std::basic_string<charT> sR);
         template<typename charT>
         int icompare(charT* pL, charT* pR);
+
+        template<typename charT>
+        std::size_t ifind(std::basic_string<charT> str, std::basic_string<charT> subStr);
+        template<typename charT>
+        std::size_t ifind(charT* pStr, charT* pSubStr);
     }
 }
 
@@ -74,10 +79,10 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 template<typename ...Args>
 inline std::string dkstd::format_string(const std::string & format, Args ...args)
 {
-    int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;	// Extra space for '\0'
+    int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
     std::unique_ptr<char[]> buf(new char[size]);
     std::snprintf(buf.get(), size, format.c_str(), args...);
-    return std::string(buf.get(), buf.get() + size - 1);					// We don't want the '\0' inside
+    return std::string(buf.get(), buf.get() + size - 1);                    // We don't want the '\0' inside
 }
 
 // format string
@@ -85,10 +90,10 @@ inline std::string dkstd::format_string(const std::string & format, Args ...args
 template<typename ...Args>
 inline std::wstring dkstd::format_string(const std::wstring & format, Args ...args)
 {
-    int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;	// Extra space for '\0'
+    int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
     std::unique_ptr<wchar_t[]> buf(new wchar_t[size]);
     std::swprintf(buf.get(), size, format.c_str(), args...);
-    return std::wstring(buf.get(), buf.get() + size - 1);					// We don't want the '\0' inside
+    return std::wstring(buf.get(), buf.get() + size - 1);                   // We don't want the '\0' inside
 }
 
 // convert to lower string
@@ -131,7 +136,7 @@ inline std::basic_string<charT> dkstd::string::to_upper(charT * pInput)
     return dkstd::string::to_upper(sInput);
 }
 
-// case insensitive string compare
+// case insensitive compare string
 // KhiemDH - 2016-09-10
 template<typename charT>
 int dkstd::string::icompare(std::basic_string<charT> sL, std::basic_string<charT> sR)
@@ -141,14 +146,34 @@ int dkstd::string::icompare(std::basic_string<charT> sL, std::basic_string<charT
     return sL.compare(sR);
 }
 
-// case insensitive string compare
+// case insensitive compare string
 // KhiemDH - 2016-09-10
 template<typename charT>
 int dkstd::string::icompare(charT * pL, charT * pR)
 {
     std::basic_string<charT> sL(pL);
     std::basic_string<charT> sR(pR);
-    return 0;
+    return dkstd::string::icompare(sL, sR);
+}
+
+// case insensitive find sub-string
+// KhiemDH - 2016-09-24
+template<typename charT>
+std::size_t dkstd::string::ifind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr)
+{
+    sStr = dkstd::string::to_lower(sStr);
+    sSubStr = dkstd::string::to_lower(sSubStr);
+    return sStr.find(sSubStr);
+}
+
+// case insensitive find sub-string
+// KhiemDH - 2016-09-24
+template<typename charT>
+std::size_t dkstd::string::ifind(charT * pStr, charT * pSubStr)
+{
+    std::basic_string<charT> sStr(pStr);
+    std::basic_string<charT> sSubStr(pSubStr);
+    return dkstd::string::ifind(sStr, sSubStr);
 }
 
 #endif // !_DKSTD_STRING_
