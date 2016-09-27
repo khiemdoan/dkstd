@@ -20,14 +20,14 @@ namespace dkstd
         textfile() {};
         textfile(std::string sFilePath);
         textfile(std::wstring sFilePath);
-		textfile(std::string sFilePath, std::ios_base::openmode mode);
-		textfile(std::wstring sFilePath, std::ios_base::openmode mode);
+        textfile(std::string sFilePath, std::ios_base::openmode mode);
+        textfile(std::wstring sFilePath, std::ios_base::openmode mode);
         ~textfile();
 
         void	open(std::string sFilePath);
         void	open(std::wstring sFilePath);
-		void	open(std::string sFilePath, std::ios_base::openmode mode);
-		void	open(std::wstring sFilePath, std::ios_base::openmode mode);
+        void	open(std::string sFilePath, std::ios_base::openmode mode);
+        void	open(std::wstring sFilePath, std::ios_base::openmode mode);
         void	close();
         
         template<typename ...Args>
@@ -37,15 +37,15 @@ namespace dkstd
 
         std::vector<std::wstring>	get_all_lines();
 
-		void clear();
+        void clear();
 
     private:
         std::fstream		m_file;
-		std::ios::openmode	m_mode;
+        std::ios::openmode	m_mode;
 #ifdef _WIN32
-		std::wstring		m_sFilePath;
+        std::wstring		m_sFilePath;
 #else
-		std::string			m_sFilePath;
+        std::string			m_sFilePath;
 #endif
     };
 }
@@ -68,14 +68,14 @@ inline dkstd::textfile::textfile(std::wstring sFilePath)
 // KhiemDH - 2016-09-24
 inline dkstd::textfile::textfile(std::string sFilePath, std::ios_base::openmode mode)
 {
-	this->open(sFilePath, mode);
+    this->open(sFilePath, mode);
 }
 
 // constructor with file path and open mode
 // KhiemDH - 2016-09-24
 inline dkstd::textfile::textfile(std::wstring sFilePath, std::ios_base::openmode mode)
 {
-	this->open(sFilePath, mode);
+    this->open(sFilePath, mode);
 }
 
 // destructor
@@ -89,14 +89,14 @@ inline dkstd::textfile::~textfile()
 // KhiemDH - 2016-09-24
 inline void dkstd::textfile::open(std::string sFilePath)
 {
-	this->open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+    this->open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
 }
 
 // open file
 // KhiemDH - 2016-09-24
 inline void dkstd::textfile::open(std::wstring sFilePath)
 {
-	this->open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
+    this->open(sFilePath, std::fstream::in | std::fstream::out | std::fstream::app);
 }
 
 // open file with custom mode
@@ -104,12 +104,12 @@ inline void dkstd::textfile::open(std::wstring sFilePath)
 inline void dkstd::textfile::open(std::string sFilePath, std::ios_base::openmode mode)
 {
 #ifdef _WIN32
-	this->open(dkstd::s2ws(sFilePath), mode);
+    this->open(dkstd::s2ws(sFilePath), mode);
 #else
-	this->close();
-	m_file.open(sFilePath, mode);
-	m_sFilePath = sFilePath;
-	m_mode = mode;
+    this->close();
+    m_file.open(sFilePath, mode);
+    m_sFilePath = sFilePath;
+    m_mode = mode;
 #endif
 }
 
@@ -118,12 +118,12 @@ inline void dkstd::textfile::open(std::string sFilePath, std::ios_base::openmode
 inline void dkstd::textfile::open(std::wstring sFilePath, std::ios_base::openmode mode)
 {
 #ifdef _WIN32
-	this->close();
-	m_file.open(sFilePath, mode);
-	m_sFilePath = sFilePath;
-	m_mode = mode;
+    this->close();
+    m_file.open(sFilePath, mode);
+    m_sFilePath = sFilePath;
+    m_mode = mode;
 #else
-	this->open(dkstd::ws2s(sFilePath), mode);
+    this->open(dkstd::ws2s(sFilePath), mode);
 #endif
 }
 
@@ -171,13 +171,17 @@ inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
     std::vector<std::wstring>	vectorContents;
 
     if (m_file.good()) {
-        m_file.seekg(0, std::fstream::beg);
-        while (!m_file.eof()) {
-            std::getline(m_file, sLine);
-            if (sLine.length() > 0 && sLine.back() == '\r') {
-                sLine.pop_back();
+        m_file.seekg(0, std::fstream::end);
+        if (m_file.tellg() > 0)
+        {
+            m_file.seekg(0, std::fstream::beg);
+            while (!m_file.eof()) {
+                std::getline(m_file, sLine);
+                if (sLine.length() > 0 && sLine.back() == '\r') {
+                    sLine.pop_back();
+                }
+                vectorContents.push_back(dkstd::s2ws(sLine));
             }
-            vectorContents.push_back(dkstd::s2ws(sLine));
         }
         m_file.clear();
     }
@@ -188,10 +192,10 @@ inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
 // clear text in file
 inline void dkstd::textfile::clear()
 {
-	this->close();
-	m_file.open(m_sFilePath, std::fstream::out | std::fstream::trunc);
-	this->close();
-	this->open(m_sFilePath, m_mode);
+    this->close();
+    m_file.open(m_sFilePath, std::fstream::out | std::fstream::trunc);
+    this->close();
+    this->open(m_sFilePath, m_mode);
 }
 
 #endif // !_DKSTD_TEXTFILE_
