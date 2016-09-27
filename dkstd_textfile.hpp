@@ -174,7 +174,7 @@ inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
         m_file.seekg(0, std::fstream::beg);
         while (!m_file.eof()) {
             std::getline(m_file, sLine);
-            if (sLine.back() == '\r') {
+            if (sLine.length() > 0 && sLine.back() == '\r') {
                 sLine.pop_back();
             }
             vectorContents.push_back(dkstd::s2ws(sLine));
