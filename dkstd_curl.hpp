@@ -2,6 +2,8 @@
 // created:     2016-08-04
 // modified:    2016-08-05
 
+// use /MD instead /MT
+
 #ifndef _DKSTD_CURL_
 #define _DKSTD_CURL_
 
@@ -13,12 +15,11 @@
 #include "curl/curl.h"
 
 #ifdef _WIN32
-#pragma comment (linker, "/NODEFAULTLIB:libcmt.lib")
-#ifdef _DEBUG
-#pragma comment (lib, "curl/libcurl_a_debug.lib")
-#else
-#pragma comment (lib, "curl/libcurl_a.lib")
-#endif
+#   ifdef _DEBUG
+#       pragma comment (lib, "curl/libcurl_a_debug.lib")
+#   else
+#       pragma comment (lib, "curl/libcurl_a.lib")
+#   endif
 #endif
 
 #include "dkstd_string.hpp"

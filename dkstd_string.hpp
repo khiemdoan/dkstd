@@ -1,11 +1,10 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2016-09-24
+// modified:    2016-10-29
 
 #ifndef _DKSTD_STRING_
 #define _DKSTD_STRING_
 
-#include "string"
 #include "codecvt"
 #include "algorithm"
 #include "memory"
@@ -40,9 +39,14 @@ namespace dkstd
         int icompare(charT* pL, charT* pR);
 
         template<typename charT>
-        std::size_t ifind(std::basic_string<charT> str, std::basic_string<charT> subStr);
+        std::size_t ifind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos = 0);
         template<typename charT>
-        std::size_t ifind(charT* pStr, charT* pSubStr);
+        std::size_t ifind(charT* pStr, charT* pSubStr, std::size_t pos = 0);
+
+        template<typename charT>
+        std::size_t irfind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos = std::basic_string<charT>::npos);
+        template<typename charT>
+        std::size_t irfind(charT* pStr, charT* pSubStr, std::size_t pos = std::basic_string<charT>::npos);
     }
 }
 
@@ -77,7 +81,7 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 // format string
 // KhiemDH - 2016-07-27
 template<typename ...Args>
-inline std::string dkstd::format_string(const std::string & format, Args ...args)
+std::string dkstd::format_string(const std::string & format, Args ...args)
 {
     std::string sReturn;
     int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
@@ -93,7 +97,7 @@ inline std::string dkstd::format_string(const std::string & format, Args ...args
 // format string
 // KhiemDH - 2016-07-27
 template<typename ...Args>
-inline std::wstring dkstd::format_string(const std::wstring & format, Args ...args)
+std::wstring dkstd::format_string(const std::wstring & format, Args ...args)
 {
     std::wstring sReturn;
     int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
@@ -109,7 +113,7 @@ inline std::wstring dkstd::format_string(const std::wstring & format, Args ...ar
 // convert to lower string
 // KhiemDH - 2016-07-13
 template<typename charT>
-inline std::basic_string<charT> dkstd::string::to_lower(std::basic_string<charT> sInput)
+std::basic_string<charT> dkstd::string::to_lower(std::basic_string<charT> sInput)
 {
     std::basic_string<charT> sOutput;
     sOutput.resize(sInput.size());
@@ -120,7 +124,7 @@ inline std::basic_string<charT> dkstd::string::to_lower(std::basic_string<charT>
 // convert to lower string
 // KhiemDH - 2016-08-15
 template<typename charT>
-inline std::basic_string<charT> dkstd::string::to_lower(charT * pInput)
+std::basic_string<charT> dkstd::string::to_lower(charT * pInput)
 {
     std::basic_string<charT> sInput(pInput);
     return dkstd::string::to_lower(sInput);
@@ -129,7 +133,7 @@ inline std::basic_string<charT> dkstd::string::to_lower(charT * pInput)
 // convert to upper string
 // KhiemDH - 2016-07-13
 template<typename charT>
-inline std::basic_string<charT> dkstd::string::to_upper(std::basic_string<charT> sInput)
+std::basic_string<charT> dkstd::string::to_upper(std::basic_string<charT> sInput)
 {
     std::basic_string<charT> sOutput;
     sOutput.resize(sInput.size());
@@ -140,7 +144,7 @@ inline std::basic_string<charT> dkstd::string::to_upper(std::basic_string<charT>
 // convert to upper string
 // KhiemDH - 2016-08-15
 template<typename charT>
-inline std::basic_string<charT> dkstd::string::to_upper(charT * pInput)
+std::basic_string<charT> dkstd::string::to_upper(charT * pInput)
 {
     std::basic_string<charT> sInput(pInput);
     return dkstd::string::to_upper(sInput);
@@ -166,24 +170,44 @@ int dkstd::string::icompare(charT * pL, charT * pR)
     return dkstd::string::icompare(sL, sR);
 }
 
-// case insensitive find sub-string
-// KhiemDH - 2016-09-24
+// case insensitive finds the first substring
+// KhiemDH - 2016-10-29
 template<typename charT>
-std::size_t dkstd::string::ifind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr)
+std::size_t dkstd::string::ifind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos)
 {
     sStr = dkstd::string::to_lower(sStr);
     sSubStr = dkstd::string::to_lower(sSubStr);
-    return sStr.find(sSubStr);
+    return sStr.find(sSubStr, pos);
 }
 
-// case insensitive find sub-string
-// KhiemDH - 2016-09-24
+// case insensitive finds the first substring
+// KhiemDH - 2016-10-29
 template<typename charT>
-std::size_t dkstd::string::ifind(charT * pStr, charT * pSubStr)
+std::size_t dkstd::string::ifind(charT * pStr, charT * pSubStr, std::size_t pos)
 {
     std::basic_string<charT> sStr(pStr);
     std::basic_string<charT> sSubStr(pSubStr);
-    return dkstd::string::ifind(sStr, sSubStr);
+    return dkstd::string::ifind(sStr, sSubStr, pos);
+}
+
+// case insensitive finds the last substring
+// KhiemDH - 2016-10-29
+template<typename charT>
+std::size_t dkstd::string::irfind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos)
+{
+    sStr = dkstd::string::to_lower(sStr);
+    sSubStr = dkstd::string::to_lower(sSubStr);
+    return sStr.rfind(sSubStr, pos);
+}
+
+// case insensitive finds the last substring
+// KhiemDH - 2016-10-29
+template<typename charT>
+std::size_t irfind(charT* pStr, charT* pSubStr, std::size_t pos = 0)
+{
+    std::basic_string<charT> sStr(pStr);
+    std::basic_string<charT> sSubStr(pSubStr);
+    return dkstd::string::irfind(sStr, sSubStr, pos);
 }
 
 #endif // !_DKSTD_STRING_

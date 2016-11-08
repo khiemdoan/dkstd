@@ -41,7 +41,7 @@ namespace dkstd
 
     private:
         std::fstream		m_file;
-        std::ios::openmode	m_mode;
+        std::ios::openmode	m_mode = std::fstream::in | std::fstream::out | std::fstream::app;
 #ifdef _WIN32
         std::wstring		m_sFilePath;
 #else

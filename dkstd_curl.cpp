@@ -8,7 +8,7 @@ size_t dkstd::curl::m_nInstance = 0;
 
 // constructor - no parameter
 // KhiemDH - 2016-08-05
-inline dkstd::curl::curl()
+dkstd::curl::curl()
 {
     if (m_nInstance == 0) {
         curl_global_init(CURL_GLOBAL_ALL);
@@ -18,14 +18,14 @@ inline dkstd::curl::curl()
 
 // constructor - wstring parameter
 // KhiemDH - 2016-08-05
-inline dkstd::curl::curl(std::wstring sUrl)
+dkstd::curl::curl(std::wstring sUrl)
 {
     curl(dkstd::ws2s(sUrl));
 }
 
 // constructor - string parameter
 // KhiemDH - 2016-08-05
-inline dkstd::curl::curl(std::string sUrl)
+dkstd::curl::curl(std::string sUrl)
 {
     curl();
     m_sUrl = sUrl;
@@ -33,7 +33,7 @@ inline dkstd::curl::curl(std::string sUrl)
 
 // destructor
 // KhiemDH - 2016-08-05
-inline dkstd::curl::~curl()
+dkstd::curl::~curl()
 {
     if (m_nInstance == 1) {
         curl_global_cleanup();
@@ -43,14 +43,14 @@ inline dkstd::curl::~curl()
 
 // set url for request - wstring parameter
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::set_url(std::wstring sUrl)
+void dkstd::curl::set_url(std::wstring sUrl)
 {
     return this->set_url(dkstd::ws2s(sUrl));
 }
 
 // set url for request - string parameter
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::set_url(std::string sUrl)
+void dkstd::curl::set_url(std::string sUrl)
 {
     m_sUrl = sUrl;
 }
@@ -58,7 +58,7 @@ inline void dkstd::curl::set_url(std::string sUrl)
 // add a header for request - wstring parameters
 // parameters: header name, header vallue
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::add_header(std::wstring sName, std::wstring sValue)
+void dkstd::curl::add_header(std::wstring sName, std::wstring sValue)
 {
     return this->add_header(dkstd::ws2s(sName), dkstd::ws2s(sValue));
 }
@@ -66,7 +66,7 @@ inline void dkstd::curl::add_header(std::wstring sName, std::wstring sValue)
 // add a header for request - string parameters
 // parameters: header name, header vallue
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::add_header(std::string sName, std::string sValue)
+void dkstd::curl::add_header(std::string sName, std::string sValue)
 {
     m_mapHeaders[sName] = sValue;
 }
@@ -74,7 +74,7 @@ inline void dkstd::curl::add_header(std::string sName, std::string sValue)
 // add a form data for request - wstring parameters
 // parameters: field name, value
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::add_data(std::wstring sField, std::wstring sValue)
+void dkstd::curl::add_data(std::wstring sField, std::wstring sValue)
 {
     return this->add_data(dkstd::ws2s(sField), dkstd::ws2s(sValue));
 }
@@ -82,7 +82,7 @@ inline void dkstd::curl::add_data(std::wstring sField, std::wstring sValue)
 // add a form data for request - string parameters
 // parameters: field name, value
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::add_data(std::string sField, std::string sValue)
+void dkstd::curl::add_data(std::string sField, std::string sValue)
 {
     m_mapData[sField] = sValue;
 }
@@ -90,7 +90,7 @@ inline void dkstd::curl::add_data(std::string sField, std::string sValue)
 // add a file form data for request - wstring parameters
 // parameters: field name, file path
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::add_file(std::wstring sField, std::wstring sFilePath)
+void dkstd::curl::add_file(std::wstring sField, std::wstring sFilePath)
 {
     return this->add_file(dkstd::ws2s(sField), dkstd::ws2s(sFilePath));
 }
@@ -98,14 +98,14 @@ inline void dkstd::curl::add_file(std::wstring sField, std::wstring sFilePath)
 // add a file form data for request - string parameters
 // parameters: field name, file path
 // KhiemDH - 2016-08-05
-inline void dkstd::curl::add_file(std::string sField, std::string sFilePath)
+void dkstd::curl::add_file(std::string sField, std::string sFilePath)
 {
     m_mapFiles[sField] = sFilePath;
 }
 
 // send request
 // KhiemDH - 2016-08-05
-inline bool dkstd::curl::send_request()
+bool dkstd::curl::send_request()
 {
     CURL                    *curl_handle = nullptr;
     CURLcode                res = CURLE_OK;
@@ -163,7 +163,7 @@ inline bool dkstd::curl::send_request()
 
 // get content return after send request
 // KhiemDH - 2016-08-05
-inline std::string dkstd::curl::get_content()
+std::string dkstd::curl::get_content()
 {
     return m_sContent;
 }
@@ -171,7 +171,7 @@ inline std::string dkstd::curl::get_content()
 // download content to file - wstring parameter
 // parameter - file path
 // KhiemDH - 2016-08-05
-inline bool dkstd::curl::download_to_file(std::wstring sFilePath)
+bool dkstd::curl::download_to_file(std::wstring sFilePath)
 {
     bool bReturn = false;
     bool bRequest = false;
@@ -191,21 +191,21 @@ inline bool dkstd::curl::download_to_file(std::wstring sFilePath)
 // download content to file - string parameter
 // parameter - file path
 // KhiemDH - 2016-08-05
-inline bool dkstd::curl::download_to_file(std::string sFilePath)
+bool dkstd::curl::download_to_file(std::string sFilePath)
 {
     return download_to_file(dkstd::s2ws(sFilePath));
 }
 
 // get redirect
 // KhiemDH - 2016-08-05
-inline std::string dkstd::curl::get_redirect()
+std::string dkstd::curl::get_redirect()
 {
     return m_sLocation;
 }
 
 // write data to std::string
 // KhiemDH - 2016-08-05
-inline size_t dkstd::curl::write_data(char * contents, size_t size, size_t nmemb, std::string * stream)
+size_t dkstd::curl::write_data(char * contents, size_t size, size_t nmemb, std::string * stream)
 {
     size_t realsize = size * nmemb;
     stream->append(contents, realsize);
@@ -214,7 +214,7 @@ inline size_t dkstd::curl::write_data(char * contents, size_t size, size_t nmemb
 
 // write data to std::ofstream
 // KhiemDH - 2016-08-05
-inline size_t dkstd::curl::write_file(char * contents, size_t size, size_t nmemb, std::ofstream * file)
+size_t dkstd::curl::write_file(char * contents, size_t size, size_t nmemb, std::ofstream * file)
 {
     size_t realsize = size * nmemb;
     if (file->good() == true) {
