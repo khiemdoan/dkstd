@@ -10,10 +10,11 @@ size_t dkstd::curl::m_nInstance = 0;
 // KhiemDH - 2016-08-05
 dkstd::curl::curl()
 {
-    if (m_nInstance == 0) {
+    if (m_nInstance == 0)
+    {
         curl_global_init(CURL_GLOBAL_ALL);
-        m_nInstance++;
     }
+    m_nInstance++;
 }
 
 // constructor - wstring parameter
@@ -35,7 +36,8 @@ dkstd::curl::curl(std::string sUrl)
 // KhiemDH - 2016-08-05
 dkstd::curl::~curl()
 {
-    if (m_nInstance == 1) {
+    if (m_nInstance == 1)
+    {
         curl_global_cleanup();
     }
     m_nInstance--;
@@ -109,55 +111,82 @@ bool dkstd::curl::send_request()
 {
     CURL                    *curl_handle = nullptr;
     CURLcode                res = CURLE_OK;
-
+    
+    bool                    bCustomHeader = false;
+    bool                    bPost = false;
+    
     struct curl_slist       *chunk = NULL;
     struct curl_httppost    *post = NULL;
     struct curl_httppost    *last = NULL;
-
+    
     bool                    bReturn = false;
-
+    
     curl_handle = curl_easy_init();
     m_sLocation = "";
-
+    
     // header
-    for (const std::pair<std::string, std::string>& header : m_mapHeaders) {
+    for (const std::pair<std::string, std::string>& header : m_mapHeaders)
+    {
+        bCustomHeader = true;
         std::string s = header.first + ":" + header.second;
         chunk = curl_slist_append(chunk, s.c_str());
     }
 
     // data
-    for (auto i : m_mapData) {
+    for (auto i : m_mapData)
+    {
+        bPost = true;
         curl_formadd(&post, &last, CURLFORM_COPYNAME, i.first.c_str(),
             CURLFORM_COPYCONTENTS, i.second.c_str(), CURLFORM_END);
     }
 
     // file
-    for (auto i : m_mapFiles) {
+    for (auto i : m_mapFiles)
+    {
+        bPost = true;
         curl_formadd(&post, &last, CURLFORM_COPYNAME, i.first.c_str(),
             CURLFORM_FILE, i.second.c_str(), CURLFORM_END);
     }
 
     curl_easy_setopt(curl_handle, CURLOPT_URL, m_sUrl.c_str());
-    curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, chunk);
-    curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, post);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, &m_sContent);
 
+    if (bCustomHeader)
+    {
+        curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, chunk);
+    }
+    
+    if (bPost)
+    {
+        curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, post);
+    }
+    
+
     res = curl_easy_perform(curl_handle);
-    if (res == CURLE_OK) {
+    if (res == CURLE_OK)
+    {
         bReturn = true;
     }
 
     char *location;
     res = curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &location);
-    if ((res == CURLE_OK) && location) {
+    if ((res == CURLE_OK) && location)
+    {
         m_sLocation = location;
     }
 
-    curl_formfree(post);
-    curl_slist_free_all(chunk);
+    if (bPost)
+    {
+        curl_formfree(post);
+    }
+    
+    if (bCustomHeader)
+    {
+        curl_slist_free_all(chunk);
+    }
+    
     curl_easy_cleanup(curl_handle);
-
     return bReturn;
 }
 
@@ -178,7 +207,8 @@ bool dkstd::curl::download_to_file(std::wstring sFilePath)
 
     bRequest = send_request();
     std::ofstream file(sFilePath, std::fstream::out | std::fstream::binary);
-    if (bRequest && file.good()) {
+    if (bRequest && file.good())
+    {
         file << m_sContent;
         m_sContent = "";
         file.close();
@@ -217,7 +247,8 @@ size_t dkstd::curl::write_data(char * contents, size_t size, size_t nmemb, std::
 size_t dkstd::curl::write_file(char * contents, size_t size, size_t nmemb, std::ofstream * file)
 {
     size_t realsize = size * nmemb;
-    if (file->good() == true) {
+    if (file->good() == true)
+    {
         file->write(contents, realsize);
     }
     return realsize;

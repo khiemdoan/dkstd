@@ -1,6 +1,6 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2016-10-29
+// modified:    2017-02-04
 
 #ifndef _DKSTD_STRING_
 #define _DKSTD_STRING_
@@ -79,12 +79,16 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 }
 
 // format string
-// KhiemDH - 2016-07-27
+// KhiemDH - 2017-02-04
 template<typename ...Args>
 std::string dkstd::format_string(const std::string & format, Args ...args)
 {
     std::string sReturn;
+#ifdef _WIN32
+    int size = _scprintf(format.c_str(), args...) + 1;                      // Extra space for '\0'
+#else
     int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
+#endif
     std::unique_ptr<char[]> buf(new char[size]);
     size = std::snprintf(buf.get(), size, format.c_str(), args...);
     if (size > 0)
@@ -95,12 +99,16 @@ std::string dkstd::format_string(const std::string & format, Args ...args)
 }
 
 // format string
-// KhiemDH - 2016-07-27
+// KhiemDH - 2017-02-04
 template<typename ...Args>
 std::wstring dkstd::format_string(const std::wstring & format, Args ...args)
 {
     std::wstring sReturn;
+#ifdef _WIN32
+    int size = _scwprintf(format.c_str(), args...) + 1;                     // Extra space for '\0'
+#else
     int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
+#endif
     std::unique_ptr<wchar_t[]> buf(new wchar_t[size]);
     size = std::swprintf(buf.get(), size, format.c_str(), args...);
     if (size > 0)
