@@ -1,9 +1,9 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-07-06
 // modified:    2016-09-24
+// https://github.com/khiemdoancrazy/dkstd
 
-#ifndef _DKSTD_TEXTFILE_
-#define _DKSTD_TEXTFILE_
+#pragma once
 
 #include "fstream"
 #include "vector"
@@ -29,7 +29,7 @@ namespace dkstd
         void	open(std::string sFilePath, std::ios_base::openmode mode);
         void	open(std::wstring sFilePath, std::ios_base::openmode mode);
         void	close();
-        
+
         template<typename ...Args>
         void write_line(std::string sFormat, Args ...args);
         template<typename ...Args>
@@ -149,6 +149,7 @@ inline void dkstd::textfile::write_line(std::string sFormat, Args ...args)
             sContent = "\n" + sContent;
         }
         m_file << sContent;
+        m_file.flush();
         m_file.clear();		// clear the error flag
     }
 }
@@ -197,5 +198,3 @@ inline void dkstd::textfile::clear()
     this->close();
     this->open(m_sFilePath, m_mode);
 }
-
-#endif // !_DKSTD_TEXTFILE_

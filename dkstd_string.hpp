@@ -1,9 +1,9 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2017-02-04
+// modified:    2017-03-13
+// https://github.com/khiemdoancrazy/dkstd
 
-#ifndef _DKSTD_STRING_
-#define _DKSTD_STRING_
+#pragma once
 
 #include "codecvt"
 #include "algorithm"
@@ -16,13 +16,13 @@ namespace dkstd
     std::wstring s2ws(std::string str);
     std::string ws2s(std::wstring wstr);
 
-    template<typename ...Args>
-    std::string format_string(const std::string& format, Args ...args);
-    template<typename ...Args>
-    std::wstring format_string(const std::wstring& format, Args ...args);
-
     namespace string
     {
+        template<typename ...Args>
+        std::string format(const std::string& format, Args ...args);
+        template<typename ...Args>
+        std::wstring format(const std::wstring& format, Args ...args);
+
         template<typename charT>
         std::basic_string<charT> to_lower(std::basic_string<charT> sInput);
         template<typename charT>
@@ -81,15 +81,12 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 // format string
 // KhiemDH - 2017-02-04
 template<typename ...Args>
-std::string dkstd::format_string(const std::string & format, Args ...args)
+std::string dkstd::string::format(const std::string & format, Args ...args)
 {
     std::string sReturn;
-#ifdef _WIN32
-    int size = _scprintf(format.c_str(), args...) + 1;                      // Extra space for '\0'
-#else
-    int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
-#endif
-    std::unique_ptr<char[]> buf(new char[size]);
+    char a[2] = { 0 };
+    int size = std::snprintf(a, sizeof(a) / sizeof(char), format.c_str(), args...);
+    std::unique_ptr<char[]> buf(new char[size + 1]);        // Extra space for '\0'
     size = std::snprintf(buf.get(), size, format.c_str(), args...);
     if (size > 0)
     {
@@ -101,15 +98,12 @@ std::string dkstd::format_string(const std::string & format, Args ...args)
 // format string
 // KhiemDH - 2017-02-04
 template<typename ...Args>
-std::wstring dkstd::format_string(const std::wstring & format, Args ...args)
+std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 {
     std::wstring sReturn;
-#ifdef _WIN32
-    int size = _scwprintf(format.c_str(), args...) + 1;                     // Extra space for '\0'
-#else
-    int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
-#endif
-    std::unique_ptr<wchar_t[]> buf(new wchar_t[size]);
+    wchar_t a[2];
+    int size = std::swprintf(a, sizeof(a) / sizeof(wchar_t), format.c_str(), args...);
+    std::unique_ptr<wchar_t[]> buf(new wchar_t[size] + 1);      // Extra space for '\0'
     size = std::swprintf(buf.get(), size, format.c_str(), args...);
     if (size > 0)
     {
@@ -217,5 +211,3 @@ std::size_t irfind(charT* pStr, charT* pSubStr, std::size_t pos = 0)
     std::basic_string<charT> sSubStr(pSubStr);
     return dkstd::string::irfind(sStr, sSubStr, pos);
 }
-
-#endif // !_DKSTD_STRING_

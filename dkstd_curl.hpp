@@ -1,24 +1,22 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-08-04
 // modified:    2016-08-05
+// https://github.com/khiemdoancrazy/dkstd
 
-// use /MD instead /MT
-
-#ifndef _DKSTD_CURL_
-#define _DKSTD_CURL_
+#pragma once
 
 #include "string"
 #include "fstream"
 #include "map"
 
 #define CURL_STATICLIB
-#include "curl/curl.h"
+#include "libcurl/curl.h"
 
 #ifdef _WIN32
 #   ifdef _DEBUG
-#       pragma comment (lib, "curl/libcurl_a_debug.lib")
+#       pragma comment (lib, "libcurl/libcurl_a_debug.lib")
 #   else
-#       pragma comment (lib, "curl/libcurl_a.lib")
+#       pragma comment (lib, "libcurl/libcurl_a.lib")
 #   endif
 #endif
 
@@ -63,5 +61,3 @@ namespace dkstd
         static size_t write_file(char * contents, size_t size, size_t nmemb, std::ofstream * file);
     };
 }
-
-#endif // !_DKSTD_CURL_

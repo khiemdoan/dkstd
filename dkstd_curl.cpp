@@ -1,6 +1,7 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-08-04
 // modified:    2016-08-05
+// https://github.com/khiemdoancrazy/dkstd
 
 #include "dkstd_curl.hpp"
 
@@ -111,19 +112,19 @@ bool dkstd::curl::send_request()
 {
     CURL                    *curl_handle = nullptr;
     CURLcode                res = CURLE_OK;
-    
+
     bool                    bCustomHeader = false;
     bool                    bPost = false;
-    
+
     struct curl_slist       *chunk = NULL;
     struct curl_httppost    *post = NULL;
     struct curl_httppost    *last = NULL;
-    
+
     bool                    bReturn = false;
-    
+
     curl_handle = curl_easy_init();
     m_sLocation = "";
-    
+
     // header
     for (const std::pair<std::string, std::string>& header : m_mapHeaders)
     {
@@ -156,12 +157,12 @@ bool dkstd::curl::send_request()
     {
         curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, chunk);
     }
-    
+
     if (bPost)
     {
         curl_easy_setopt(curl_handle, CURLOPT_HTTPPOST, post);
     }
-    
+
 
     res = curl_easy_perform(curl_handle);
     if (res == CURLE_OK)
@@ -180,12 +181,12 @@ bool dkstd::curl::send_request()
     {
         curl_formfree(post);
     }
-    
+
     if (bCustomHeader)
     {
         curl_slist_free_all(chunk);
     }
-    
+
     curl_easy_cleanup(curl_handle);
     return bReturn;
 }
