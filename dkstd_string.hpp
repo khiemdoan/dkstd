@@ -1,6 +1,6 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2017-03-13
+// modified:    2017-04-13
 // https://github.com/khiemdoancrazy/dkstd
 
 #pragma once
@@ -52,7 +52,7 @@ namespace dkstd
 
 // convert std::string to std::wstring
 // KhiemDH - 2016-08-14
-inline std::wstring dkstd::s2ws(std::string str)
+std::wstring dkstd::s2ws(std::string str)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
@@ -66,7 +66,7 @@ inline std::wstring dkstd::s2ws(std::string str)
 
 // convert std::wstring to std::string
 // KhiemDH - 2016-08-14
-inline std::string dkstd::ws2s(std::wstring wstr)
+std::string dkstd::ws2s(std::wstring wstr)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
@@ -79,14 +79,14 @@ inline std::string dkstd::ws2s(std::wstring wstr)
 }
 
 // format string
-// KhiemDH - 2017-02-04
+// KhiemDH - 2017-04-13
 template<typename ...Args>
 std::string dkstd::string::format(const std::string & format, Args ...args)
 {
     std::string sReturn;
-    char a[2] = { 0 };
-    int size = std::snprintf(a, sizeof(a) / sizeof(char), format.c_str(), args...);
-    std::unique_ptr<char[]> buf(new char[size + 1]);        // Extra space for '\0'
+    // Extra space for '\0'
+    int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;
+    std::unique_ptr<char[]> buf(new char[size]);
     size = std::snprintf(buf.get(), size, format.c_str(), args...);
     if (size > 0)
     {
@@ -96,14 +96,14 @@ std::string dkstd::string::format(const std::string & format, Args ...args)
 }
 
 // format string
-// KhiemDH - 2017-02-04
+// KhiemDH - 2017-04-13
 template<typename ...Args>
 std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 {
     std::wstring sReturn;
-    wchar_t a[2];
-    int size = std::swprintf(a, sizeof(a) / sizeof(wchar_t), format.c_str(), args...);
-    std::unique_ptr<wchar_t[]> buf(new wchar_t[size] + 1);      // Extra space for '\0'
+    // Extra space for '\0'
+    int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;
+    std::unique_ptr<wchar_t[]> buf(new wchar_t[size]);
     size = std::swprintf(buf.get(), size, format.c_str(), args...);
     if (size > 0)
     {
@@ -205,7 +205,7 @@ std::size_t dkstd::string::irfind(std::basic_string<charT> sStr, std::basic_stri
 // case insensitive finds the last substring
 // KhiemDH - 2016-10-29
 template<typename charT>
-std::size_t irfind(charT* pStr, charT* pSubStr, std::size_t pos = 0)
+std::size_t dkstd::string::irfind(charT * pStr, charT * pSubStr, std::size_t pos)
 {
     std::basic_string<charT> sStr(pStr);
     std::basic_string<charT> sSubStr(pSubStr);
