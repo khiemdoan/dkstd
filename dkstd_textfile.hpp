@@ -142,7 +142,7 @@ inline void dkstd::textfile::close()
 template<typename ...Args>
 inline void dkstd::textfile::write_line(std::string sFormat, Args ...args)
 {
-    std::string sContent = dkstd::format_string(sFormat, args...);
+    std::string sContent = dkstd::string::format(sFormat, args...);
     if (m_file.good()) {
         m_file.seekp(0, std::fstream::end);
         if (m_file.tellg() != std::streampos::fpos(0)) {
@@ -160,7 +160,7 @@ inline void dkstd::textfile::write_line(std::string sFormat, Args ...args)
 template<typename ...Args>
 inline void dkstd::textfile::write_line(std::wstring sFormat, Args ...args)
 {
-    std::wstring sContent = dkstd::format_string(sFormat, args...);
+    std::wstring sContent = dkstd::string::format(sFormat, args...);
     this->write_line(dkstd::ws2s(sContent));
 }
 
