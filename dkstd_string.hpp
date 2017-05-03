@@ -1,6 +1,6 @@
 // author:      Khiêm Đoàn Hoà
 // created:     2016-03-19
-// modified:    2017-04-30
+// modified:    2017-05-03
 // https://github.com/khiemdoancrazy/dkstd
 
 #pragma once
@@ -10,6 +10,9 @@
 #include "memory"
 #include "stdexcept"
 #include "locale"
+#include "vector"
+#include "list"
+#include "numeric"
 
 namespace dkstd
 {
@@ -47,6 +50,11 @@ namespace dkstd
         std::size_t irfind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos = std::basic_string<charT>::npos);
         template<typename charT>
         std::size_t irfind(charT* pStr, charT* pSubStr, std::size_t pos = std::basic_string<charT>::npos);
+
+		template<typename charT>
+		std::basic_string<charT> join(const std::vector<std::basic_string<charT>>& vector, const std::basic_string<charT>& delim);
+		template<typename charT>
+		std::basic_string<charT> join(const std::list<std::basic_string<charT>>& list, const std::basic_string<charT>& delim);
     }
 }
 
@@ -208,4 +216,42 @@ std::size_t dkstd::string::irfind(charT * pStr, charT * pSubStr, std::size_t pos
     std::basic_string<charT> sStr(pStr);
     std::basic_string<charT> sSubStr(pSubStr);
     return dkstd::string::irfind(sStr, sSubStr, pos);
+}
+
+// join a vector of string to string
+// KhiemDH - 2016-05-03
+template<typename charT>
+std::basic_string<charT> dkstd::string::join(const std::vector<std::basic_string<charT>>& vector, const std::basic_string<charT>& delim)
+{
+    if (vector.size() == 0)
+        return std::basic_string<charT>();
+
+    return std::accumulate(
+        std::next(vector.begin()),
+        vector.end(),
+        vector[0],
+        [&](std::basic_string<charT> a, std::basic_string<charT> b)
+        {
+            return a + delim + b;
+        }
+    );
+}
+
+// join a list of string to string
+// KhiemDH - 2016-05-03
+template<typename charT>
+std::basic_string<charT> dkstd::string::join(const std::list<std::basic_string<charT>>& list, const std::basic_string<charT>& delim)
+{
+    if (list.size() == 0)
+        return std::basic_string<charT>();
+
+    return std::accumulate(
+        std::next(list.begin()),
+        list.end(),
+        *list.begin(),
+        [&](std::basic_string<charT> a, std::basic_string<charT> b)
+        {
+            return a + delim + b;
+        }
+    );
 }
