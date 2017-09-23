@@ -1,7 +1,7 @@
-// author:      Khiêm Đoàn Hoà
+// author:      Khiêm Đoàn Hoà (KhiemDH)
+// github:      https://github.com/khiemdoancrazy/dkstd
 // created:     2016-03-19
-// modified:    2017-05-03
-// https://github.com/khiemdoancrazy/dkstd
+// modified:    2017-09-23
 
 #pragma once
 
@@ -13,6 +13,7 @@
 #include "vector"
 #include "list"
 #include "numeric"
+#include "sstream"
 
 namespace dkstd
 {
@@ -26,35 +27,45 @@ namespace dkstd
         template<typename ...Args>
         std::wstring format(const std::wstring& format, Args ...args);
 
-        template<typename charT>
-        std::basic_string<charT> to_lower(std::basic_string<charT> sInput);
-        template<typename charT>
-        std::basic_string<charT> to_lower(charT* pInput);
+        template<typename char_t>
+        std::basic_string<char_t> to_lower(const std::basic_string<char_t>& sInput);
+        template<typename char_t>
+        std::basic_string<char_t> to_lower(const char_t* pInput);
 
-        template<typename charT>
-        std::basic_string<charT> to_upper(std::basic_string<charT> sInput);
-        template<typename charT>
-        std::basic_string<charT> to_upper(charT* pInput);
+        template<typename char_t>
+        std::basic_string<char_t> to_upper(const std::basic_string<char_t> sInput);
+        template<typename char_t>
+        std::basic_string<char_t> to_upper(const char_t* pInput);
 
-        template<typename charT>
-        int icompare(std::basic_string<charT> sL, std::basic_string<charT> sR);
-        template<typename charT>
-        int icompare(charT* pL, charT* pR);
+        template<typename char_t>
+        int icompare(const std::basic_string<char_t> sL, const std::basic_string<char_t> sR);
+        template<typename char_t>
+        int icompare(const char_t* pL, const char_t* pR);
 
-        template<typename charT>
-        std::size_t ifind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos = 0);
-        template<typename charT>
-        std::size_t ifind(charT* pStr, charT* pSubStr, std::size_t pos = 0);
+        template<typename char_t>
+        std::size_t ifind(const std::basic_string<char_t> sStr, const std::basic_string<char_t> sSubStr, const std::size_t pos = 0);
+        template<typename char_t>
+        std::size_t ifind(const char_t* pStr, const char_t* pSubStr, const std::size_t pos = 0);
 
-        template<typename charT>
-        std::size_t irfind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos = std::basic_string<charT>::npos);
-        template<typename charT>
-        std::size_t irfind(charT* pStr, charT* pSubStr, std::size_t pos = std::basic_string<charT>::npos);
+        template<typename char_t>
+        std::size_t irfind(const std::basic_string<char_t> sStr, const std::basic_string<char_t> sSubStr, const std::size_t pos = std::basic_string<char_t>::npos);
+        template<typename char_t>
+        std::size_t irfind(const char_t* pStr, const char_t* pSubStr, const std::size_t pos = std::basic_string<char_t>::npos);
 
-		template<typename charT>
-		std::basic_string<charT> join(const std::vector<std::basic_string<charT>>& vector, const std::basic_string<charT>& delim);
-		template<typename charT>
-		std::basic_string<charT> join(const std::list<std::basic_string<charT>>& list, const std::basic_string<charT>& delim);
+        template<typename char_t>
+        std::basic_string<char_t> join(const std::vector<std::basic_string<char_t>>& vector, const std::basic_string<char_t>& delim);
+        template<typename char_t>
+        std::basic_string<char_t> join(const std::list<std::basic_string<char_t>>& list, const std::basic_string<char_t>& delim);
+
+        template<typename char_t>
+        std::vector<std::basic_string<char_t>> split(const std::basic_string<char_t>& s, const char_t delim);
+
+        template<typename char_t>
+        std::basic_string<char_t> ltrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars);
+        template<typename char_t>
+        std::basic_string<char_t> rtrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars);
+        template<typename char_t>
+        std::basic_string<char_t> trim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars);
     }
 }
 
@@ -120,10 +131,10 @@ std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 
 // convert to lower string
 // KhiemDH - 2016-07-13
-template<typename charT>
-std::basic_string<charT> dkstd::string::to_lower(std::basic_string<charT> sInput)
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::to_lower(const std::basic_string<char_t>& sInput)
 {
-    std::basic_string<charT> sOutput;
+    std::basic_string<char_t> sOutput;
     sOutput.resize(sInput.size());
     std::transform(sInput.begin(), sInput.end(), sOutput.begin(), ::tolower);
     return sOutput;
@@ -131,19 +142,19 @@ std::basic_string<charT> dkstd::string::to_lower(std::basic_string<charT> sInput
 
 // convert to lower string
 // KhiemDH - 2016-08-15
-template<typename charT>
-std::basic_string<charT> dkstd::string::to_lower(charT * pInput)
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::to_lower(const char_t * pInput)
 {
-    std::basic_string<charT> sInput(pInput);
+    std::basic_string<char_t> sInput(pInput);
     return dkstd::string::to_lower(sInput);
 }
 
 // convert to upper string
 // KhiemDH - 2016-07-13
-template<typename charT>
-std::basic_string<charT> dkstd::string::to_upper(std::basic_string<charT> sInput)
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::to_upper(const std::basic_string<char_t> sInput)
 {
-    std::basic_string<charT> sOutput;
+    std::basic_string<char_t> sOutput;
     sOutput.resize(sInput.size());
     std::transform(sInput.begin(), sInput.end(), sOutput.begin(), ::toupper);
     return sOutput;
@@ -151,17 +162,17 @@ std::basic_string<charT> dkstd::string::to_upper(std::basic_string<charT> sInput
 
 // convert to upper string
 // KhiemDH - 2016-08-15
-template<typename charT>
-std::basic_string<charT> dkstd::string::to_upper(charT * pInput)
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::to_upper(const char_t * pInput)
 {
-    std::basic_string<charT> sInput(pInput);
+    std::basic_string<char_t> sInput(pInput);
     return dkstd::string::to_upper(sInput);
 }
 
 // case insensitive compare string
 // KhiemDH - 2016-09-10
-template<typename charT>
-int dkstd::string::icompare(std::basic_string<charT> sL, std::basic_string<charT> sR)
+template<typename char_t>
+int dkstd::string::icompare(const std::basic_string<char_t> sL, const std::basic_string<char_t> sR)
 {
     sL = dkstd::string::to_lower(sL);
     sR = dkstd::string::to_lower(sR);
@@ -170,18 +181,18 @@ int dkstd::string::icompare(std::basic_string<charT> sL, std::basic_string<charT
 
 // case insensitive compare string
 // KhiemDH - 2016-09-10
-template<typename charT>
-int dkstd::string::icompare(charT * pL, charT * pR)
+template<typename char_t>
+int dkstd::string::icompare(const char_t * pL, const char_t * pR)
 {
-    std::basic_string<charT> sL(pL);
-    std::basic_string<charT> sR(pR);
+    std::basic_string<char_t> sL(pL);
+    std::basic_string<char_t> sR(pR);
     return dkstd::string::icompare(sL, sR);
 }
 
 // case insensitive finds the first substring
 // KhiemDH - 2016-10-29
-template<typename charT>
-std::size_t dkstd::string::ifind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos)
+template<typename char_t>
+std::size_t dkstd::string::ifind(std::basic_string<char_t> sStr, std::basic_string<char_t> sSubStr, std::size_t pos)
 {
     sStr = dkstd::string::to_lower(sStr);
     sSubStr = dkstd::string::to_lower(sSubStr);
@@ -190,18 +201,18 @@ std::size_t dkstd::string::ifind(std::basic_string<charT> sStr, std::basic_strin
 
 // case insensitive finds the first substring
 // KhiemDH - 2016-10-29
-template<typename charT>
-std::size_t dkstd::string::ifind(charT * pStr, charT * pSubStr, std::size_t pos)
+template<typename char_t>
+std::size_t dkstd::string::ifind(const char_t * pStr, const char_t * pSubStr, const std::size_t pos)
 {
-    std::basic_string<charT> sStr(pStr);
-    std::basic_string<charT> sSubStr(pSubStr);
+    std::basic_string<char_t> sStr(pStr);
+    std::basic_string<char_t> sSubStr(pSubStr);
     return dkstd::string::ifind(sStr, sSubStr, pos);
 }
 
 // case insensitive finds the last substring
 // KhiemDH - 2016-10-29
-template<typename charT>
-std::size_t dkstd::string::irfind(std::basic_string<charT> sStr, std::basic_string<charT> sSubStr, std::size_t pos)
+template<typename char_t>
+std::size_t dkstd::string::irfind(std::basic_string<char_t> sStr, std::basic_string<char_t> sSubStr, std::size_t pos)
 {
     sStr = dkstd::string::to_lower(sStr);
     sSubStr = dkstd::string::to_lower(sSubStr);
@@ -210,48 +221,100 @@ std::size_t dkstd::string::irfind(std::basic_string<charT> sStr, std::basic_stri
 
 // case insensitive finds the last substring
 // KhiemDH - 2016-10-29
-template<typename charT>
-std::size_t dkstd::string::irfind(charT * pStr, charT * pSubStr, std::size_t pos)
+template<typename char_t>
+std::size_t dkstd::string::irfind(const char_t * pStr, const char_t * pSubStr, const std::size_t pos)
 {
-    std::basic_string<charT> sStr(pStr);
-    std::basic_string<charT> sSubStr(pSubStr);
+    std::basic_string<char_t> sStr(pStr);
+    std::basic_string<char_t> sSubStr(pSubStr);
     return dkstd::string::irfind(sStr, sSubStr, pos);
 }
 
 // join a vector of string to string
 // KhiemDH - 2016-05-03
-template<typename charT>
-std::basic_string<charT> dkstd::string::join(const std::vector<std::basic_string<charT>>& vector, const std::basic_string<charT>& delim)
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::join(const std::vector<std::basic_string<char_t>>& vector, const std::basic_string<char_t>& delim)
 {
     if (vector.size() == 0)
-        return std::basic_string<charT>();
+        return std::basic_string<char_t>();
 
     return std::accumulate(
         std::next(vector.begin()),
         vector.end(),
         vector[0],
-        [&](std::basic_string<charT> a, std::basic_string<charT> b)
-        {
-            return a + delim + b;
-        }
+        [&](std::basic_string<char_t> a, std::basic_string<char_t> b)
+    {
+        return a + delim + b;
+    }
     );
 }
 
 // join a list of string to string
 // KhiemDH - 2016-05-03
-template<typename charT>
-std::basic_string<charT> dkstd::string::join(const std::list<std::basic_string<charT>>& list, const std::basic_string<charT>& delim)
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::join(const std::list<std::basic_string<char_t>>& list, const std::basic_string<char_t>& delim)
 {
     if (list.size() == 0)
-        return std::basic_string<charT>();
+        return std::basic_string<char_t>();
 
     return std::accumulate(
         std::next(list.begin()),
         list.end(),
         *list.begin(),
-        [&](std::basic_string<charT> a, std::basic_string<charT> b)
-        {
-            return a + delim + b;
-        }
+        [&](std::basic_string<char_t> a, std::basic_string<char_t> b)
+    {
+        return a + delim + b;
+    }
     );
+}
+
+// split string to vector of string
+// KhiemDH - 2017-09-22
+template<typename char_t>
+std::vector<std::basic_string<char_t>> dkstd::string::split(const std::basic_string<char_t>& s, const char_t delim)
+{
+    std::vector<std::basic_string<char_t>> v;
+    std::basic_stringstream<char_t> ss;
+    ss.str(s);
+    std::basic_string<char_t> item;
+    while (std::getline(ss, item, delim))
+    {
+        v.push_back(item);
+    }
+    return v;
+}
+
+// KhiemDH - 2017-09-23
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::ltrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars)
+{
+    std::basic_string<char_t>::size_type npos = std::basic_string<char_t>::npos;
+    std::basic_string<char_t>::size_type begin_trim = str.find_first_of(chars);
+    std::basic_string<char_t>::size_type begin_content = str.find_first_not_of(chars);
+    if (begin_trim == npos)
+        return str;
+    if (begin_content == npos)
+        return std::basic_string<char_t>();
+    std::basic_string<char_t>::size_type size = str.length();
+    return str.substr(begin_content, size - begin_content);
+}
+
+// KhiemDH - 2017-09-23
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::rtrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars)
+{
+    std::basic_string<char_t>::size_type npos = std::basic_string<char_t>::npos;
+    std::basic_string<char_t>::size_type end_trim = str.find_last_of(chars);
+    std::basic_string<char_t>::size_type end_content = str.find_last_not_of(chars);
+    if (end_trim == npos)
+        return str;
+    if (end_content == npos)
+        return std::basic_string<char_t>();
+    return str.substr(0, end_content + 1);
+}
+
+// KhiemDH - 2017-09-23
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::trim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars)
+{
+    return rtrim(ltrim(str, chars), chars);
 }

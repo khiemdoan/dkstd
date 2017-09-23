@@ -1,7 +1,7 @@
-// author:      Khiêm Đoàn Hoà
+// author:      Khiêm Đoàn Hoà (KhiemDH)
+// github:      https://github.com/khiemdoancrazy/dkstd
 // created:     2016-07-06
 // modified:    2016-09-24
-// https://github.com/khiemdoancrazy/dkstd
 
 #pragma once
 
