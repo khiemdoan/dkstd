@@ -1,5 +1,5 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
-// github:      https://github.com/khiemdoancrazy/dkstd
+// github:      https://github.com/khiemdoan/dkstd
 // created:     2016-08-04
 // modified:    2016-08-05
 

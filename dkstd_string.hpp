@@ -1,5 +1,5 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
-// github:      https://github.com/khiemdoancrazy/dkstd
+// github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
 // modified:    2017-09-23
 
@@ -22,6 +22,9 @@ namespace dkstd
 
     namespace string
     {
+        std::wstring s2ws(std::string str);
+        std::string ws2s(std::wstring wstr);
+
         template<typename ...Args>
         std::string format(const std::string& format, Args ...args);
         template<typename ...Args>
@@ -70,8 +73,22 @@ namespace dkstd
 }
 
 // convert std::string to std::wstring
+// KhiemDH - 2017-10-14
+std::wstring dkstd::s2ws(std::string str)
+{
+    return dkstd::string::s2ws(str);
+}
+
+// convert std::wstring to std::string
+// KhiemDH - 2017-10-14
+std::string dkstd::ws2s(std::wstring wstr)
+{
+    return dkstd::string::ws2s(wstr);
+}
+
+// convert std::string to std::wstring
 // KhiemDH - 2016-08-14
-inline std::wstring dkstd::s2ws(std::string str)
+std::wstring dkstd::string::s2ws(std::string str)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
@@ -85,7 +102,7 @@ inline std::wstring dkstd::s2ws(std::string str)
 
 // convert std::wstring to std::string
 // KhiemDH - 2016-08-14
-inline std::string dkstd::ws2s(std::wstring wstr)
+std::string dkstd::string::ws2s(std::wstring wstr)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
