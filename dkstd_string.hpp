@@ -74,21 +74,21 @@ namespace dkstd
 
 // convert std::string to std::wstring
 // KhiemDH - 2017-10-14
-std::wstring dkstd::s2ws(std::string str)
+inline std::wstring dkstd::s2ws(std::string str)
 {
     return dkstd::string::s2ws(str);
 }
 
 // convert std::wstring to std::string
 // KhiemDH - 2017-10-14
-std::string dkstd::ws2s(std::wstring wstr)
+inline std::string dkstd::ws2s(std::wstring wstr)
 {
     return dkstd::string::ws2s(wstr);
 }
 
 // convert std::string to std::wstring
 // KhiemDH - 2016-08-14
-std::wstring dkstd::string::s2ws(std::string str)
+inline std::wstring dkstd::string::s2ws(std::string str)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
@@ -102,7 +102,7 @@ std::wstring dkstd::string::s2ws(std::string str)
 
 // convert std::wstring to std::string
 // KhiemDH - 2016-08-14
-std::string dkstd::string::ws2s(std::wstring wstr)
+inline std::string dkstd::string::ws2s(std::wstring wstr)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
