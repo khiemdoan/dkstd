@@ -1,7 +1,7 @@
 ﻿// author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-10-14
-// modified:    2017-10-14
+// modified:    2017-10-16
 
 #pragma once
 
@@ -26,6 +26,7 @@ namespace dkstd
         std::wstring get_time_as_string(std::wstring format = L"%Y-%m-%dT%H:%M:%S");
         std::wstring get_time_as_filename(std::wstring name = L"", std::wstring ext = L"");
         std::wstring time_to_string(std::time_t time, std::wstring format = L"%Y-%m-%dT%H:%M:%S");
+        std::time_t string_to_time(std::wstring str, std::wstring format = L"%Y-%m-%dT%H:%M:%S");
 
         void sleep_for_milliseconds(unsigned long milliseconds);
         void sleep_for_seconds(unsigned long seconds);
@@ -83,9 +84,14 @@ inline std::wstring dkstd::time::get_time_as_filename(std::wstring name, std::ws
 }
 
 // format time to string
-// KhiemDH - 2017-10-14
+// KhiemDH - 2017-10-16
 inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring format)
 {
+    if (time == -1)
+    {
+        return std::wstring();
+    }
+
     std::tm tm_buf = { 0 };
     std::wstringstream ss;
 
@@ -93,6 +99,18 @@ inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring f
     ss << std::put_time(&tm_buf, format.c_str());
 
     return ss.str();
+}
+
+// convert std::string to std::time_t
+// KhiemDH - 2017-10-16
+std::time_t dkstd::time::string_to_time(std::wstring str, std::wstring format)
+{
+    std::wstringstream ss;
+    std::tm tm_buf = { 0 };
+    ss << str;
+    ss >> std::get_time(&tm_buf, format.c_str());
+    std::time_t time = std::mktime(&tm_buf);
+    return time;
 }
 
 // sleep thread in milliseconds
