@@ -102,8 +102,9 @@ inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring f
 }
 
 // convert std::string to std::time_t
+// return -1 if fail
 // KhiemDH - 2017-10-16
-std::time_t dkstd::time::string_to_time(std::wstring str, std::wstring format)
+inline std::time_t dkstd::time::string_to_time(std::wstring str, std::wstring format)
 {
     std::wstringstream ss;
     std::tm tm_buf = { 0 };
