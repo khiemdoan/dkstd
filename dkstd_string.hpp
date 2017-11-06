@@ -191,9 +191,9 @@ std::basic_string<char_t> dkstd::string::to_upper(const char_t * pInput)
 template<typename char_t>
 int dkstd::string::icompare(const std::basic_string<char_t> sL, const std::basic_string<char_t> sR)
 {
-    sL = dkstd::string::to_lower(sL);
-    sR = dkstd::string::to_lower(sR);
-    return sL.compare(sR);
+    std::basic_string<char_t> lowerLeftString = dkstd::string::to_lower(sL);
+    std::basic_string<char_t> lowerRightString = dkstd::string::to_lower(sR);
+    return lowerLeftString.compare(lowerRightString);
 }
 
 // case insensitive compare string
@@ -259,9 +259,9 @@ std::basic_string<char_t> dkstd::string::join(const std::vector<std::basic_strin
         vector.end(),
         vector[0],
         [&](std::basic_string<char_t> a, std::basic_string<char_t> b)
-    {
-        return a + delim + b;
-    }
+        {
+            return a + delim + b;
+        }
     );
 }
 
@@ -278,9 +278,9 @@ std::basic_string<char_t> dkstd::string::join(const std::list<std::basic_string<
         list.end(),
         *list.begin(),
         [&](std::basic_string<char_t> a, std::basic_string<char_t> b)
-    {
-        return a + delim + b;
-    }
+        {
+            return a + delim + b;
+        }
     );
 }
 
