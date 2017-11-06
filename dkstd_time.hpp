@@ -92,13 +92,21 @@ inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring f
         return std::wstring();
     }
 
-    std::tm tm_buf = { 0 };
-    std::wstringstream ss;
+    std::wstring sTime;
 
-    localtime_s(&tm_buf, &time);
-    ss << std::put_time(&tm_buf, format.c_str());
+    try
+    {
+        std::tm tm_buf = { 0 };
+        std::wstringstream ss;
 
-    return ss.str();
+        localtime_s(&tm_buf, &time);
+        ss << std::put_time(&tm_buf, format.c_str());
+
+        sTime = ss.str();
+    }
+    catch (...) {}
+
+    return sTime;
 }
 
 // convert std::string to std::time_t
