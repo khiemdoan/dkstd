@@ -1,0 +1,1 @@
+Put header file (.h file) and library file (.lib file) of libcurl at here.
