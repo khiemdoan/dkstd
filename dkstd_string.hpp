@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
-// modified:    2017-09-23
+// modified:    2018-04-21
 
 #pragma once
 
@@ -304,14 +304,14 @@ std::vector<std::basic_string<char_t>> dkstd::string::split(const std::basic_str
 template<typename char_t>
 std::basic_string<char_t> dkstd::string::ltrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars)
 {
-    std::basic_string<char_t>::size_type npos = std::basic_string<char_t>::npos;
-    std::basic_string<char_t>::size_type begin_trim = str.find_first_of(chars);
-    std::basic_string<char_t>::size_type begin_content = str.find_first_not_of(chars);
+    typename std::basic_string<char_t>::size_type npos = std::basic_string<char_t>::npos;
+    typename std::basic_string<char_t>::size_type begin_trim = str.find_first_of(chars);
+    typename std::basic_string<char_t>::size_type begin_content = str.find_first_not_of(chars);
     if (begin_trim == npos)
         return str;
     if (begin_content == npos)
         return std::basic_string<char_t>();
-    std::basic_string<char_t>::size_type size = str.length();
+    typename std::basic_string<char_t>::size_type size = str.length();
     return str.substr(begin_content, size - begin_content);
 }
 
@@ -319,9 +319,9 @@ std::basic_string<char_t> dkstd::string::ltrim(const std::basic_string<char_t>& 
 template<typename char_t>
 std::basic_string<char_t> dkstd::string::rtrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars)
 {
-    std::basic_string<char_t>::size_type npos = std::basic_string<char_t>::npos;
-    std::basic_string<char_t>::size_type end_trim = str.find_last_of(chars);
-    std::basic_string<char_t>::size_type end_content = str.find_last_not_of(chars);
+    typename std::basic_string<char_t>::size_type npos = std::basic_string<char_t>::npos;
+    typename std::basic_string<char_t>::size_type end_trim = str.find_last_of(chars);
+    typename std::basic_string<char_t>::size_type end_content = str.find_last_not_of(chars);
     if (end_trim == npos)
         return str;
     if (end_content == npos)
