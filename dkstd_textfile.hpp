@@ -170,7 +170,7 @@ inline bool dkstd::textfile::write_line(std::wstring sFormat, Args ...args)
 }
 
 // read file to std::vector
-// KhiemDH - 2017-10-16
+// KhiemDH - 2018-05-15
 inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
 {
     std::vector<std::wstring>   vectorContents;
@@ -189,7 +189,7 @@ inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
                 {
                     sLine.pop_back();
                 }
-                vectorContents.push_back(dkstd::s2ws(sLine));
+                vectorContents.emplace_back(dkstd::s2ws(sLine));
             }
         }
         m_file.clear();
