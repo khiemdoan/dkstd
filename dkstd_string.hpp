@@ -96,7 +96,7 @@ inline std::wstring dkstd::string::s2ws(std::string str)
     try {
         sOutput = converter.from_bytes(str);
     }
-    catch (const std::range_error e) {}
+    catch (const std::range_error &e) {}
     return sOutput;
 }
 
@@ -110,7 +110,7 @@ inline std::string dkstd::string::ws2s(std::wstring wstr)
     try {
         sOutput = converter.to_bytes(wstr);
     }
-    catch (const std::range_error e) {}
+    catch (const std::range_error &e) {}
     return sOutput;
 }
 
