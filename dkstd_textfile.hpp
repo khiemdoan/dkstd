@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-07-06
-// modified:    2017-10-16
+// modified:    2018-05-15
 
 #pragma once
 
@@ -139,7 +139,7 @@ inline void dkstd::textfile::close()
 
 // write a line to end file
 // input: UTF-8 string
-// KhiemDH - 2017-10-16
+// KhiemDH - 2018-05-15
 template<typename ...Args>
 inline bool dkstd::textfile::write_line(std::string sFormat, Args ...args)
 {
@@ -147,7 +147,7 @@ inline bool dkstd::textfile::write_line(std::string sFormat, Args ...args)
     {
         std::string sContent = dkstd::string::format(sFormat, args...);
         m_file.seekp(0, std::fstream::end);
-        if (m_file.tellg() != std::streampos::fpos(0))
+        if (m_file.tellg() != 0)
         {
             sContent = "\n" + sContent;
         }
