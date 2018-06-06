@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
-// modified:    2018-04-21
+// modified:    2018-06-06
 
 #pragma once
 
@@ -69,6 +69,16 @@ namespace dkstd
         std::basic_string<char_t> rtrim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars);
         template<typename char_t>
         std::basic_string<char_t> trim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars);
+
+        template<typename char_t>
+        std::basic_string<char_t> replace(std::basic_string<char_t> str, std::basic_string<char_t> old_value, std::basic_string<char_t> new_value);
+        template<typename char_t>
+        std::basic_string<char_t> replace(char_t *str, char_t *old_value, char_t *new_value);
+
+        template<typename char_t>
+        std::basic_string<char_t> replace_all(std::basic_string<char_t> str, std::basic_string<char_t> old_value, std::basic_string<char_t> new_value);
+        template<typename char_t>
+        std::basic_string<char_t> replace_all(char_t *str, char_t *old_value, char_t *new_value);
     }
 }
 
@@ -334,4 +344,44 @@ template<typename char_t>
 std::basic_string<char_t> dkstd::string::trim(const std::basic_string<char_t>& str, const std::basic_string<char_t>& chars)
 {
     return rtrim(ltrim(str, chars), chars);
+}
+
+// KhiemDH - 2018-06-06
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::replace(std::basic_string<char_t> str, std::basic_string<char_t> old_value, std::basic_string<char_t> new_value)
+{
+    if (old_value.empty())
+        return str;
+    typename std::basic_string<char_t>::size_type start_pos = str.find(old_value);
+    if (start_pos == std::basic_string<char_t>::npos)
+        return str;
+    return str.replace(start_pos, old_value.length(), new_value);
+}
+
+// KhiemDH - 2018-06-06
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::replace(char_t *str, char_t *old_value, char_t *new_value)
+{
+    return dkstd::string::replace(std::basic_string<char_t>(str), std::basic_string<char_t>(old_value), std::basic_string<char_t>(new_value));
+}
+
+// KhiemDH - 2018-06-06
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::replace_all(std::basic_string<char_t> str, std::basic_string<char_t> old_value, std::basic_string<char_t> new_value)
+{
+    if (old_value.empty())
+        return str;
+    typename std::basic_string<char_t>::size_type start_pos = str.find(old_value, 0);
+    for (; start_pos != std::basic_string<char_t>::npos; start_pos = str.find(old_value, start_pos))
+    {
+        str = str.replace(start_pos, old_value.length(), new_value);
+    }
+    return str;
+}
+
+// KhiemDH - 2018-06-06
+template<typename char_t>
+std::basic_string<char_t> dkstd::string::replace_all(char_t *str, char_t *old_value, char_t *new_value)
+{
+    return dkstd::string::replace_all(std::basic_string<char_t>(str), std::basic_string<char_t>(old_value), std::basic_string<char_t>(new_value));
 }
