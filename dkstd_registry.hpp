@@ -1,16 +1,18 @@
-﻿// author:      Khiêm Đoàn Hoà (KhiemDH)
+// author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-04-26
-// modified:    2017-04-26
+// modified:    2018-07-27
 
 #pragma once
 
+#ifdef _WIN32
+
 #include "windows.h"
+#pragma comment (lib, "Advapi32.lib")
+
 #include "string"
 #include "vector"
 #include "memory"
-
-#pragma comment (lib, "Advapi32.lib")
 
 namespace dkstd
 {
@@ -164,21 +166,21 @@ inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue
     return dkstd::registry::SetKey(HKEY_LOCAL_MACHINE, sKey, sValue, dwType, data);
 }
 
-// KhiemDH - 2017-04-26
+// KhiemDH - 2018-07-27
 // Đọc giá trị trong Registry
 inline bool dkstd::registry::ReadKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data)
 {
-    HKEY	hKey = NULL;
-    LONG	lCreate = ERROR_SUCCESS;
-    LONG	lQuery = ERROR_SUCCESS;
-    DWORD	dwRegOpened = REG_OPENED_EXISTING_KEY;
-    DWORD	dwSize = 0;
-    bool	bReturn = false;
+    HKEY    hKey = NULL;
+    LONG    lCreate = ERROR_SUCCESS;
+    LONG    lQuery = ERROR_SUCCESS;
+    DWORD   dwRegOpened = NULL;
+    DWORD   dwSize = 0;
+    bool    bReturn = false;
     std::unique_ptr<uint8_t[]> buffer;
 
     try
     {
-        lCreate = RegCreateKeyExW(hRootKey, sKey.c_str(), NULL, NULL, REG_OPTION_VOLATILE, KEY_READ, NULL, &hKey, &dwRegOpened);
+        lCreate = RegCreateKeyExW(hRootKey, sKey.c_str(), NULL, NULL, REG_OPTION_NON_VOLATILE, KEY_READ, NULL, &hKey, &dwRegOpened);
         if (lCreate != ERROR_SUCCESS)
             throw registry_exception();
 
@@ -207,21 +209,21 @@ inline bool dkstd::registry::ReadKey(HKEY hRootKey, std::wstring sKey, std::wstr
     return bReturn;
 }
 
-// KhiemDH - 2017-04-26
+// KhiemDH - 2018-07-27
 // Gán giá trị trong Registry
 // Nếu key chưa tồn tại thì tạo mới
 inline bool dkstd::registry::SetKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data)
 {
-    HKEY	hKey = NULL;
-    LONG	lCreate = ERROR_SUCCESS;
-    LONG	lQuery = ERROR_SUCCESS;
-    DWORD	dwRegOpened = REG_OPENED_EXISTING_KEY;
-    DWORD	dwSize = data.size();
-    bool	bReturn = false;
+    HKEY    hKey = NULL;
+    LONG    lCreate = ERROR_SUCCESS;
+    LONG    lQuery = ERROR_SUCCESS;
+    DWORD   dwRegOpened = NULL;
+    DWORD   dwSize = data.size();
+    bool    bReturn = false;
 
     try
     {
-        lCreate = RegCreateKeyExW(hRootKey, sKey.c_str(), NULL, NULL, REG_OPTION_VOLATILE, KEY_WRITE, NULL, &hKey, &dwRegOpened);
+        lCreate = RegCreateKeyExW(hRootKey, sKey.c_str(), NULL, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, &dwRegOpened);
         if (lCreate != ERROR_SUCCESS)
             throw registry_exception();
 
@@ -241,3 +243,5 @@ inline bool dkstd::registry::SetKey(HKEY hRootKey, std::wstring sKey, std::wstri
 
     return bReturn;
 }
+
+#endif

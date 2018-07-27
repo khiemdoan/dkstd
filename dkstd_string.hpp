@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
-// modified:    2018-06-06
+// modified:    2018-07-27
 
 #pragma once
 
@@ -152,7 +152,7 @@ std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 }
 
 // convert to lower string
-// KhiemDH - 2016-07-13
+// KhiemDH - 2018-07-27
 template<typename char_t>
 std::basic_string<char_t> dkstd::string::to_lower(const std::basic_string<char_t>& sInput)
 {
@@ -175,7 +175,7 @@ std::basic_string<char_t> dkstd::string::to_lower(const char_t * pInput)
 }
 
 // convert to upper string
-// KhiemDH - 2016-07-13
+// KhiemDH - 2018-07-27
 template<typename char_t>
 std::basic_string<char_t> dkstd::string::to_upper(const std::basic_string<char_t> sInput)
 {
