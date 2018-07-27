@@ -6,13 +6,8 @@
 #pragma once
 
 #include "codecvt"
-#include "algorithm"
-#include "memory"
-#include "stdexcept"
-#include "locale"
 #include "vector"
 #include "list"
-#include "numeric"
 #include "sstream"
 
 namespace dkstd
@@ -163,7 +158,10 @@ std::basic_string<char_t> dkstd::string::to_lower(const std::basic_string<char_t
 {
     std::basic_string<char_t> sOutput;
     sOutput.resize(sInput.size());
-    std::transform(sInput.begin(), sInput.end(), sOutput.begin(), ::tolower);
+    for (size_t i = 0; i < sInput.size(); i++)
+    {
+        sOutput[i] += std::tolower(sInput[i], std::locale(""));
+    }
     return sOutput;
 }
 
@@ -183,7 +181,10 @@ std::basic_string<char_t> dkstd::string::to_upper(const std::basic_string<char_t
 {
     std::basic_string<char_t> sOutput;
     sOutput.resize(sInput.size());
-    std::transform(sInput.begin(), sInput.end(), sOutput.begin(), ::toupper);
+    for (size_t i = 0; i < sInput.size(); i++)
+    {
+        sOutput[i] += std::toupper(sInput[i], std::locale(""));
+    }
     return sOutput;
 }
 
