@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-07-06
-// modified:    2018-05-15
+// modified:    2019-06-20
 
 #pragma once
 
@@ -31,9 +31,9 @@ namespace dkstd
         void    close();
 
         template<typename ...Args>
-        bool write_line(std::string sFormat, Args ...args);
+        bool write_line(std::string sContent);
         template<typename ...Args>
-        bool write_line(std::wstring sFormat, Args ...args);
+        bool write_line(std::wstring sContent);
 
         std::vector<std::wstring>   get_all_lines();
 
@@ -141,31 +141,30 @@ inline void dkstd::textfile::close()
 // input: UTF-8 string
 // KhiemDH - 2018-05-15
 template<typename ...Args>
-inline bool dkstd::textfile::write_line(std::string sFormat, Args ...args)
+inline bool dkstd::textfile::write_line(std::string sContent)
 {
-    if (m_file.good())
+    if (!m_file.good())
     {
-        std::string sContent = dkstd::string::format(sFormat, args...);
-        m_file.seekp(0, std::fstream::end);
-        if (m_file.tellg() != 0)
-        {
-            sContent = "\n" + sContent;
-        }
-        m_file << sContent;
-        m_file.flush();
-        m_file.clear();     // clear the error flag
-        return true;
+        return false;
     }
-    return false;
+
+    m_file.seekp(0, std::fstream::end);
+    if (m_file.tellg() != 0)
+    {
+        sContent = "\n" + sContent;
+    }
+    m_file << sContent;
+    m_file.flush();
+    m_file.clear();     // clear the error flag
+    return true;
 }
 
 // write a line to end file
 // input: Unicode string
 // KhiemDH - 2017-10-16
 template<typename ...Args>
-inline bool dkstd::textfile::write_line(std::wstring sFormat, Args ...args)
+inline bool dkstd::textfile::write_line(std::wstring sContent)
 {
-    std::wstring sContent = dkstd::string::format(sFormat, args...);
     return this->write_line(dkstd::ws2s(sContent));
 }
 
