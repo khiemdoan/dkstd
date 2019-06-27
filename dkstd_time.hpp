@@ -1,7 +1,7 @@
-﻿// author:      Khiêm Đoàn Hoà (KhiemDH)
+// author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-10-14
-// modified:    2017-10-16
+// modified:    2019-06-27
 
 #pragma once
 
@@ -31,6 +31,7 @@ namespace dkstd
         void sleep_for_milliseconds(unsigned long milliseconds);
         void sleep_for_seconds(unsigned long seconds);
         void sleep_for_minutes(unsigned long minutes);
+        void sleep_for_hours(unsigned long hours);
 
 #ifdef _WIN32
         std::time_t filetime_to_timet(const FILETIME& ft);
@@ -141,6 +142,13 @@ inline void dkstd::time::sleep_for_seconds(unsigned long seconds)
 inline void dkstd::time::sleep_for_minutes(unsigned long minutes)
 {
     std::this_thread::sleep_for(std::chrono::minutes(minutes));
+}
+
+// sleep thread in hours
+// KhiemDH - 2019-06-27
+void dkstd::time::sleep_for_hours(unsigned long hours)
+{
+    std::this_thread::sleep_for(std::chrono::hours(hours));
 }
 
 #ifdef _WIN32
