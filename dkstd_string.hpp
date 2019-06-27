@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
-// modified:    2018-12-18
+// modified:    2019-06-27
 
 #pragma once
 
@@ -120,35 +120,33 @@ inline std::string dkstd::string::ws2s(std::wstring wstr)
 }
 
 // format string
-// KhiemDH - 2017-04-30
+// KhiemDH - 2019-06-27
 template<typename ...Args>
 std::string dkstd::string::format(const std::string & format, Args ...args)
 {
-    std::string sReturn;
-    int size = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
-    std::unique_ptr<char[]> buf = std::make_unique<char[]>(size);
-    size = std::snprintf(buf.get(), size, format.c_str(), args...);
-    if (size > 0)
+    int size = std::snprintf(nullptr, 0, format.data(), args...);
+    if (size == 0)
     {
-        sReturn = std::string(buf.get(), size);
+        return std::string();
     }
-    return sReturn;
+    std::unique_ptr<char[]> buf = std::make_unique<char[]>(size + 1);   // Extra space for '\0'
+    size = std::snprintf(buf.get(), size + 1, format.data(), args...);
+    return std::string(buf.get(), size);
 }
 
 // format string
-// KhiemDH - 2017-04-30
+// KhiemDH - 2019-06-27
 template<typename ...Args>
 std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 {
-    std::wstring sReturn;
-    int size = std::swprintf(nullptr, 0, format.c_str(), args...) + 1;      // Extra space for '\0'
-    std::unique_ptr<wchar_t[]> buf = std::make_unique<wchar_t[]>(size);
-    size = std::swprintf(buf.get(), size, format.c_str(), args...);
-    if (size > 0)
+    int size = std::swprintf(nullptr, 0, format.data(), args...);
+    if (size == 0)
     {
-        sReturn = std::wstring(buf.get(), size);
+        return std::wstring();
     }
-    return sReturn;
+    std::unique_ptr<wchar_t[]> buf = std::make_unique<wchar_t[]>(size + 1); // Extra space for '\0'
+    size = std::swprintf(buf.get(), size + 1, format.data(), args...);
+    return std::wstring(buf.get(), size);
 }
 
 // convert to lower string
