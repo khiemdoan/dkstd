@@ -23,6 +23,6 @@ int dkstd::random::randint() {
 int dkstd::random::randint(int min, int max) {
     std::random_device device;
     std::default_random_engine engine{device()};
-    std::uniform_int_distribution<> dist(min, max);
+    const std::uniform_int_distribution<> dist(min, max);
     return dist(engine);
 }

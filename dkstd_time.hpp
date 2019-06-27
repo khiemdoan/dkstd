@@ -19,9 +19,9 @@ namespace dkstd
 {
     namespace time
     {
-        std::time_t get_time();
-        std::tm get_localtime();
-        std::tm get_localtime(std::time_t time);
+        std::time_t get_time() noexcept;
+        std::tm get_localtime() noexcept;
+        std::tm get_localtime(std::time_t time) noexcept;
 
         std::wstring get_time_as_string(std::wstring format = L"%Y-%m-%dT%H:%M:%S");
         std::wstring get_time_as_filename(std::wstring name = L"", std::wstring ext = L"");
@@ -34,30 +34,29 @@ namespace dkstd
         void sleep_for_hours(unsigned long hours);
 
 #ifdef _WIN32
-        std::time_t filetime_to_timet(const FILETIME& ft);
+        std::time_t filetime_to_timet(const FILETIME& ft) noexcept;
 #endif
     }
 }
 
 // Get current calendar time
 // KhiemDH - 2017-10-14
-inline std::time_t dkstd::time::get_time()
+inline std::time_t dkstd::time::get_time() noexcept
 {
-    std::time_t time = std::time(nullptr);;
-    return time;
+    return std::time(nullptr);;
 }
 
 // Get current calendar time as std::tm type
 // KhiemDH - 2017-10-14
-inline std::tm dkstd::time::get_localtime()
+inline std::tm dkstd::time::get_localtime() noexcept
 {
-    std::time_t time = dkstd::time::get_time();
+    const std::time_t time = dkstd::time::get_time();
     return dkstd::time::get_localtime(time);
 }
 
 // Convert std::time_t to std::tm
 // KhiemDH - 2017-10-14
-inline std::tm dkstd::time::get_localtime(std::time_t time)
+inline std::tm dkstd::time::get_localtime(std::time_t time) noexcept
 {
     std::tm tm = { 0 };
     localtime_s(&tm, &time);
@@ -68,7 +67,7 @@ inline std::tm dkstd::time::get_localtime(std::time_t time)
 // KhiemDH - 2017-10-14
 inline std::wstring dkstd::time::get_time_as_string(std::wstring format)
 {
-    std::time_t time = dkstd::time::get_time();
+    const std::time_t time = dkstd::time::get_time();
     return dkstd::time::time_to_string(time, format);
 }
 
@@ -93,8 +92,6 @@ inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring f
         return std::wstring();
     }
 
-    std::wstring sTime;
-
     try
     {
         std::tm tm_buf = { 0 };
@@ -103,11 +100,12 @@ inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring f
         localtime_s(&tm_buf, &time);
         ss << std::put_time(&tm_buf, format.c_str());
 
-        sTime = ss.str();
+        return ss.str();
     }
-    catch (...) {}
-
-    return sTime;
+    catch (...)
+    {
+        return std::wstring();
+    }
 }
 
 // convert std::string to std::time_t
@@ -119,8 +117,7 @@ inline std::time_t dkstd::time::string_to_time(std::wstring str, std::wstring fo
     std::tm tm_buf = { 0 };
     ss << str;
     ss >> std::get_time(&tm_buf, format.c_str());
-    std::time_t time = std::mktime(&tm_buf);
-    return time;
+    return std::mktime(&tm_buf);
 }
 
 // sleep thread in milliseconds
@@ -155,7 +152,7 @@ void dkstd::time::sleep_for_hours(unsigned long hours)
 // convert FILETIME type to time_t type
 // use for Windows only
 // KhiemDH - 2017-10-14
-inline std::time_t dkstd::time::filetime_to_timet(const FILETIME & ft)
+inline std::time_t dkstd::time::filetime_to_timet(const FILETIME & ft) noexcept
 {
     ULARGE_INTEGER ull = { 0 };
     ull.LowPart = ft.dwLowDateTime;
