@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
-// modified:    2019-06-27
+// modified:    2019-07-01
 
 #pragma once
 
@@ -120,7 +120,7 @@ inline std::string dkstd::string::ws2s(std::wstring wstr)
 }
 
 // format string
-// KhiemDH - 2019-06-27
+// KhiemDH - 2019-07-01
 template<typename ...Args>
 std::string dkstd::string::format(const std::string & format, Args ...args)
 {
@@ -129,13 +129,13 @@ std::string dkstd::string::format(const std::string & format, Args ...args)
     {
         return std::string();
     }
-    std::unique_ptr<char[]> buf = std::make_unique<char[]>(size + 1);   // Extra space for '\0'
-    size = std::snprintf(buf.get(), size + 1, format.data(), args...);
-    return std::string(buf.get(), size);
+    auto buf = std::vector<char>(size + 1);                             // Extra space for '\0'
+    size = std::snprintf(buf.data(), size + 1, format.data(), args...);
+    return std::string(buf.data(), size);
 }
 
 // format string
-// KhiemDH - 2019-06-27
+// KhiemDH - 2019-07-01
 template<typename ...Args>
 std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 {
@@ -144,9 +144,9 @@ std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
     {
         return std::wstring();
     }
-    std::unique_ptr<wchar_t[]> buf = std::make_unique<wchar_t[]>(size + 1); // Extra space for '\0'
-    size = std::swprintf(buf.get(), size + 1, format.data(), args...);
-    return std::wstring(buf.get(), size);
+    auto buf = std::vector<wchar_t>(size + 1);                          // Extra space for '\0'
+    size = std::swprintf(buf.data(), size + 1, format.data(), args...);
+    return std::wstring(buf.data(), size);
 }
 
 // convert to lower string
