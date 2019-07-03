@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-03-19
-// modified:    2019-07-01
+// modified:    2019-07-03
 
 #pragma once
 
@@ -150,7 +150,7 @@ std::wstring dkstd::string::format(const std::wstring & format, Args ...args)
 }
 
 // convert to lower string
-// KhiemDH - 2018-07-27
+// KhiemDH - 2019-07-03
 template<typename char_t>
 std::basic_string<char_t> dkstd::string::to_lower(const std::basic_string<char_t>& sInput)
 {
@@ -158,7 +158,7 @@ std::basic_string<char_t> dkstd::string::to_lower(const std::basic_string<char_t
     sOutput.resize(sInput.size());
     for (size_t i = 0; i < sInput.size(); i++)
     {
-        sOutput[i] += std::tolower(sInput[i], std::locale(""));
+        sOutput[i] = std::tolower(sInput[i], std::locale(""));
     }
     return sOutput;
 }
@@ -173,7 +173,7 @@ std::basic_string<char_t> dkstd::string::to_lower(const char_t * pInput)
 }
 
 // convert to upper string
-// KhiemDH - 2018-07-27
+// KhiemDH - 2019-07-03
 template<typename char_t>
 std::basic_string<char_t> dkstd::string::to_upper(const std::basic_string<char_t> sInput)
 {
@@ -181,7 +181,7 @@ std::basic_string<char_t> dkstd::string::to_upper(const std::basic_string<char_t
     sOutput.resize(sInput.size());
     for (size_t i = 0; i < sInput.size(); i++)
     {
-        sOutput[i] += std::toupper(sInput[i], std::locale(""));
+        sOutput[i] = std::toupper(sInput[i], std::locale(""));
     }
     return sOutput;
 }
