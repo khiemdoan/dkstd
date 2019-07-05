@@ -161,12 +161,17 @@ inline void dkstd::time::sleep_for_minutes(unsigned long minutes)
 
 // sleep thread in hours
 // KhiemDH - 2019-06-27
-void dkstd::time::sleep_for_hours(unsigned long hours)
+inline void dkstd::time::sleep_for_hours(unsigned long hours)
 {
     std::this_thread::sleep_for(std::chrono::hours(hours));
 }
 
-std::time_t dkstd::time::add_time(std::time_t time, timedelta delta) noexcept
+// KhiemDH - 2019-07-05
+// Add or subtract time
+// std::time_t now = dkstd::time::get_time();
+// dkstd::time::timedelta delta = dkstd::time::timedelta(-1);
+// std::time_t yesterday = dkstd::time::add_time(now, delta);
+inline std::time_t dkstd::time::add_time(std::time_t time, timedelta delta) noexcept
 {
     std::time_t delta_in_number = (std::time_t)delta.days * 24 * 60 * 60;
     delta_in_number += (std::time_t)delta.hours * 60 * 60;
