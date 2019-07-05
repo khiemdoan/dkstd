@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-10-14
-// modified:    2019-06-27
+// modified:    2019-07-05
 
 #pragma once
 
@@ -19,6 +19,13 @@ namespace dkstd
 {
     namespace time
     {
+        class timedelta
+        {
+        public:
+            timedelta(short days = 0, short hours = 0, short minutes = 0, short seconds = 0);
+            short days = 0, hours = 0, minutes = 0, seconds = 0;
+        };
+
         std::time_t get_time() noexcept;
         std::tm get_localtime() noexcept;
         std::tm get_localtime(std::time_t time) noexcept;
@@ -33,10 +40,21 @@ namespace dkstd
         void sleep_for_minutes(unsigned long minutes);
         void sleep_for_hours(unsigned long hours);
 
+        std::time_t add_time(std::time_t time, timedelta delta) noexcept;
+
 #ifdef _WIN32
         std::time_t filetime_to_timet(const FILETIME& ft) noexcept;
 #endif
     }
+}
+
+// KhiemDH - 2019-07-05
+inline dkstd::time::timedelta::timedelta(short days, short hours, short minutes, short seconds)
+{
+    this->days = days;
+    this->hours = hours;
+    this->minutes = minutes;
+    this->seconds = seconds;
 }
 
 // Get current calendar time
@@ -146,6 +164,15 @@ inline void dkstd::time::sleep_for_minutes(unsigned long minutes)
 void dkstd::time::sleep_for_hours(unsigned long hours)
 {
     std::this_thread::sleep_for(std::chrono::hours(hours));
+}
+
+std::time_t dkstd::time::add_time(std::time_t time, timedelta delta) noexcept
+{
+    std::time_t delta_in_number = (std::time_t)delta.days * 24 * 60 * 60;
+    delta_in_number += (std::time_t)delta.hours * 60 * 60;
+    delta_in_number += (std::time_t)delta.minutes * 60;
+    delta_in_number += delta.seconds;
+    return time + delta_in_number;
 }
 
 #ifdef _WIN32
