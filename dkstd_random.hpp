@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2018-12-18
-// modified:    2019-07-31
+// modified:    2019-08-01
 
 #pragma once
 
@@ -9,6 +9,7 @@
 #include <random>
 #include <vector>
 #include <list>
+#include <algorithm>
 
 namespace dkstd {
     namespace random {
@@ -39,12 +40,12 @@ double dkstd::random::rand()
     return dkstd::random::rand(0.0, 1.0);
 }
 
-// KhiemDH - 2019-07-31
+// KhiemDH - 2019-08-01
 double dkstd::random::rand(double min, double max)
 {
     std::random_device device;
     std::default_random_engine engine{ device() };
-    const std::uniform_real_distribution<> dist(min, max);
+    std::uniform_real_distribution dist(min, max);
     return dist(engine);
 }
 
@@ -53,11 +54,11 @@ int dkstd::random::randint() {
     return dkstd::random::randint(INT_MIN, INT_MAX);
 }
 
-// KhiemDH - 2018-12-18
+// KhiemDH - 2019-08-01
 int dkstd::random::randint(int min, int max) {
     std::random_device device;
     std::default_random_engine engine{device()};
-    const std::uniform_int_distribution<> dist(min, max);
+    std::uniform_int_distribution dist(min, max);
     return dist(engine);
 }
 
