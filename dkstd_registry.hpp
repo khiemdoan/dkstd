@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-04-26
-// modified:    2018-07-27
+// modified:    2019-08-03
 
 #pragma once
 
@@ -28,6 +28,9 @@ namespace dkstd
         bool Read_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
         bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
 
+        std::vector<std::wstring> EnumKey_HKCU_Key(std::wstring sKey);
+        std::vector<std::wstring> EnumValue_HKCU_Key(std::wstring sKey);
+
         /* HKEY_LOCAL_MACHINE */
         bool Read_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber);
         bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber);
@@ -38,9 +41,14 @@ namespace dkstd
         bool Read_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
         bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
 
+        std::vector<std::wstring> EnumKey_HKLM_Key(std::wstring sKey);
+        std::vector<std::wstring> EnumValue_HKLM_Key(std::wstring sKey);
+
         /* Any key */
         bool ReadKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
         bool SetKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
+        std::vector<std::wstring> EnumKey(HKEY hRootKey, std::wstring sKey);
+        std::vector<std::wstring> EnumValue(HKEY hRootKey, std::wstring sKey);
 
         class registry_exception : public std::exception {};
     };
@@ -106,6 +114,18 @@ inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue
     return dkstd::registry::SetKey(HKEY_CURRENT_USER, sKey, sValue, dwType, data);
 }
 
+// KhiemDH - 2019-08-03
+inline std::vector<std::wstring> dkstd::registry::EnumKey_HKCU_Key(std::wstring sKey)
+{
+    return EnumKey(HKEY_CURRENT_USER, sKey);
+}
+
+// KhiemDH - 2019-08-03
+inline std::vector<std::wstring> dkstd::registry::EnumValue_HKCU_Key(std::wstring sKey)
+{
+    return EnumValue(HKEY_CURRENT_USER, sKey);
+}
+
 // KhiemDH - 2017-04-26
 inline bool dkstd::registry::Read_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber)
 {
@@ -164,6 +184,18 @@ inline bool dkstd::registry::Read_HKLM_Key(std::wstring sKey, std::wstring sValu
 inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data)
 {
     return dkstd::registry::SetKey(HKEY_LOCAL_MACHINE, sKey, sValue, dwType, data);
+}
+
+// KhiemDH - 2019-08-03
+inline std::vector<std::wstring> dkstd::registry::EnumKey_HKLM_Key(std::wstring sKey)
+{
+    return EnumKey(HKEY_LOCAL_MACHINE, sKey);
+}
+
+// KhiemDH - 2019-08-03
+inline std::vector<std::wstring> dkstd::registry::EnumValue_HKLM_Key(std::wstring sKey)
+{
+    return EnumValue(HKEY_LOCAL_MACHINE, sKey);
 }
 
 // KhiemDH - 2018-07-27
@@ -242,6 +274,124 @@ inline bool dkstd::registry::SetKey(HKEY hRootKey, std::wstring sKey, std::wstri
     }
 
     return bReturn;
+}
+
+// KhiemDH - 2019-08-03
+inline std::vector<std::wstring> dkstd::registry::EnumKey(HKEY hRootKey, std::wstring sKey)
+{
+    DWORD       cSubKeys = 0;                   // number of subkeys
+    DWORD       cbMaxSubKey = 0;                // longest subkey size
+    HKEY        hKey;
+
+    LONG        lCreate = ERROR_SUCCESS;
+    LONG        lQuery = ERROR_SUCCESS;
+
+    std::vector<std::wstring>   keys;
+
+    try
+    {
+        lCreate = RegOpenKeyExW(hRootKey, sKey.c_str(), 0, KEY_READ, &hKey);
+        if (lCreate != ERROR_SUCCESS)
+            throw registry_exception();
+
+        lQuery = RegQueryInfoKeyW(
+            hKey,                       // key handle
+            NULL,                       // buffer for class name
+            NULL,                       // size of class string
+            NULL,                       // reserved
+            &cSubKeys,                  // number of subkeys
+            &cbMaxSubKey,               // longest subkey size
+            NULL,                       // longest class string
+            NULL,                       // number of values for this key
+            NULL,                       // longest value name
+            NULL,                       // longest value data
+            NULL,                       // security descriptor
+            NULL);                      // last write time
+        if (lQuery != ERROR_SUCCESS)
+            throw registry_exception();
+
+        std::vector<wchar_t> achKey;            // buffer for subkey name
+        achKey.resize(cbMaxSubKey + 1);
+
+        for (DWORD i = 0; i < cSubKeys; i++)
+        {
+            DWORD cbName = cbMaxSubKey + 1;     // size of name string
+
+            lQuery = RegEnumKeyW(hKey, i, achKey.data(), cbName);
+            if (lQuery != ERROR_SUCCESS)
+                continue;
+
+            keys.emplace_back(achKey.data());
+        }
+    }
+    catch (registry_exception) {}
+
+    if (lCreate == ERROR_SUCCESS && hKey != NULL)
+    {
+        RegCloseKey(hKey);
+        hKey = NULL;
+    }
+
+    return keys;
+}
+
+// KhiemDH - 2019-08-03
+inline std::vector<std::wstring> dkstd::registry::EnumValue(HKEY hRootKey, std::wstring sKey)
+{
+    DWORD       cValues = 0;                        // number of values for this key
+    DWORD       cchMaxValue = 0;                    // longest value name
+    HKEY        hKey;
+
+    LONG        lCreate = ERROR_SUCCESS;
+    LONG        lQuery = ERROR_SUCCESS;
+
+    std::vector<std::wstring>   values;
+
+    try
+    {
+        lCreate = RegOpenKeyExW(hRootKey, sKey.c_str(), 0, KEY_READ, &hKey);
+        if (lCreate != ERROR_SUCCESS)
+            throw registry_exception();
+
+        lQuery = RegQueryInfoKeyW(
+            hKey,                       // key handle
+            NULL,                       // buffer for class name
+            NULL,                       // size of class string
+            NULL,                       // reserved
+            NULL,                       // number of subkeys
+            NULL,                       // longest subkey size
+            NULL,                       // longest class string
+            &cValues,                   // number of values for this key
+            &cchMaxValue,               // longest value name
+            NULL,                       // longest value data
+            NULL,                       // security descriptor
+            NULL);                      // last write time
+        if (lQuery != ERROR_SUCCESS)
+            throw registry_exception();
+
+        std::vector<wchar_t> achKey;            // buffer for subkey name
+        achKey.resize(cchMaxValue + 1);
+
+        for (DWORD i = 0; i < cValues; i++)
+        {
+            DWORD cbName = cchMaxValue + 1;     // size of name string
+
+            lQuery = RegEnumValueW(hKey, i, achKey.data(), &cbName, NULL, NULL, NULL, NULL);
+            if (lQuery != ERROR_SUCCESS)
+                continue;
+
+            values.emplace_back(achKey.data());
+        }
+    }
+    catch (registry_exception) {}
+
+    if (lCreate == ERROR_SUCCESS && hKey != NULL)
+    {
+        RegCloseKey(hKey);
+        hKey = NULL;
+    }
+
+    return values;
 }
 
 #endif
