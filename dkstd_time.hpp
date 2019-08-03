@@ -73,11 +73,23 @@ inline std::tm dkstd::time::get_localtime() noexcept
 }
 
 // Convert std::time_t to std::tm
-// KhiemDH - 2017-10-14
+// KhiemDH - 2019-08-03
 inline std::tm dkstd::time::get_localtime(std::time_t time) noexcept
 {
     std::tm tm = { 0 };
+    tm.tm_mday = 1;
+#ifdef _WIN32
     localtime_s(&tm, &time);
+#else
+    localtime_r(&time, &tm);
+#endif
+
+    if (errno != 0)
+    {
+        tm = { 0 };
+        tm.tm_mday = 1;
+    }
+
     return tm;
 }
 
@@ -102,28 +114,13 @@ inline std::wstring dkstd::time::get_time_as_filename(std::wstring name, std::ws
 }
 
 // format time to string
-// KhiemDH - 2017-10-16
+// KhiemDH - 2019-08-03
 inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring format)
 {
-    if (time == -1)
-    {
-        return std::wstring();
-    }
-
-    try
-    {
-        std::tm tm_buf = { 0 };
-        std::wstringstream ss;
-
-        localtime_s(&tm_buf, &time);
-        ss << std::put_time(&tm_buf, format.c_str());
-
-        return ss.str();
-    }
-    catch (...)
-    {
-        return std::wstring();
-    }
+    std::tm tm = get_localtime(time);
+    std::wstringstream ss;
+    ss << std::put_time(&tm, format.c_str());
+    return ss.str();
 }
 
 // convert std::string to std::time_t
