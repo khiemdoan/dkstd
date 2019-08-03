@@ -18,81 +18,52 @@ namespace dkstd
 {
     namespace bytes
     {
-        std::string to_hex_string(const std::vector<uint8_t>& data);
-        std::string to_hex_string(const std::list<uint8_t>& data);
-        std::string to_hex_string(const std::string& data);
+        template<typename char_t>
+        std::basic_string<char_t> to_hex_string(const std::vector<uint8_t>& data);
 
-        std::wstring to_hex_wstring(const std::vector<uint8_t>& data);
-        std::wstring to_hex_wstring(const std::list<uint8_t>& data);
-        std::wstring to_hex_wstring(const std::string& data);
+        template<typename char_t>
+        std::basic_string<char_t> to_hex_string(const std::list<uint8_t>& data);
+
+        template<typename char_t>
+        std::basic_string<char_t> to_hex_string(const std::string& data);
 
         std::vector<uint8_t> from_hex_string(const std::string& hex);
         std::vector<uint8_t> from_hex_wstring(const std::wstring& hex);
     }
 }
 
-// KhiemDH - 2019-07-30
-inline std::string dkstd::bytes::to_hex_string(const std::vector<uint8_t>& data)
+// KhiemDH - 2019-08-03
+template<typename char_t>
+inline std::basic_string<char_t> dkstd::bytes::to_hex_string(const std::vector<uint8_t>& data)
 {
-    std::stringstream ss;
+    std::basic_stringstream<char_t> ss;
     for (const uint8_t& byte : data)
     {
-        ss << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)byte;
+        ss << std::setfill<char_t>('0') << std::setw(2) << std::hex << (uint16_t)byte;
     }
     return ss.str();
 }
 
-// KhiemDH - 2019-07-30
-inline std::string dkstd::bytes::to_hex_string(const std::list<uint8_t>& data)
+// KhiemDH - 2019-08-03
+template<typename char_t>
+inline std::basic_string<char_t> dkstd::bytes::to_hex_string(const std::list<uint8_t>& data)
 {
-    std::stringstream ss;
+    std::basic_stringstream<char_t> ss;
     for (const uint8_t& byte : data)
     {
-        ss << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)byte;
+        ss << std::setfill<char_t>('0') << std::setw(2) << std::hex << (uint16_t)byte;
     }
     return ss.str();
 }
 
-// KhiemDH - 2019-07-30
-inline std::string dkstd::bytes::to_hex_string(const std::string& data)
+// KhiemDH - 2019-08-03
+template<typename char_t>
+inline std::basic_string<char_t> dkstd::bytes::to_hex_string(const std::string& data)
 {
-    std::stringstream ss;
+    std::basic_stringstream<char_t> ss;
     for (const uint8_t& byte : data)
     {
-        ss << std::setfill('0') << std::setw(2) << std::hex << (uint16_t)byte;
-    }
-    return ss.str();
-}
-
-// KhiemDH - 2019-07-30
-inline std::wstring dkstd::bytes::to_hex_wstring(const std::vector<uint8_t>& data)
-{
-    std::wstringstream ss;
-    for (const uint8_t& byte : data)
-    {
-        ss << std::setfill(L'0') << std::setw(2) << std::hex << (uint16_t)byte;
-    }
-    return ss.str();
-}
-
-// KhiemDH - 2019-07-30
-inline std::wstring dkstd::bytes::to_hex_wstring(const std::list<uint8_t>& data)
-{
-    std::wstringstream ss;
-    for (const uint8_t& byte : data)
-    {
-        ss << std::setfill(L'0') << std::setw(2) << std::hex << (uint16_t)byte;
-    }
-    return ss.str();
-}
-
-// KhiemDH - 2019-07-30
-inline std::wstring dkstd::bytes::to_hex_wstring(const std::string& data)
-{
-    std::wstringstream ss;
-    for (const uint8_t& byte : data)
-    {
-        ss << std::setfill(L'0') << std::setw(2) << std::hex << (uint16_t)byte;
+        ss << std::setfill<char_t>('0') << std::setw(2) << std::hex << (uint16_t)byte;
     }
     return ss.str();
 }
