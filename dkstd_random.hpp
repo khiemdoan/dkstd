@@ -45,7 +45,7 @@ double dkstd::random::rand(double min, double max)
 {
     std::random_device device;
     std::default_random_engine engine{ device() };
-    std::uniform_real_distribution dist(min, max);
+    std::uniform_real_distribution<> dist(min, max);
     return dist(engine);
 }
 
@@ -58,7 +58,7 @@ int dkstd::random::randint() {
 int dkstd::random::randint(int min, int max) {
     std::random_device device;
     std::default_random_engine engine{device()};
-    std::uniform_int_distribution dist(min, max);
+    std::uniform_int_distribution<> dist(min, max);
     return dist(engine);
 }
 
