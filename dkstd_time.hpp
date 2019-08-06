@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-10-14
-// modified:    2019-08-03
+// modified:    2019-08-05
 
 #pragma once
 
@@ -102,15 +102,15 @@ inline std::wstring dkstd::time::get_time_as_string(std::wstring format)
 }
 
 // Get string to name a file with time
-// KhiemDH - 2017-10-14
-inline std::wstring dkstd::time::get_time_as_filename(std::wstring name, std::wstring ext)
+// KhiemDH - 2019-08-05
+inline std::wstring dkstd::time::get_time_as_filename(std::wstring prefix, std::wstring ext)
 {
-    std::wstring format = L"%Y_%m_%d_%H_%M_%S";
-    if (name.length())
-        format = name + L"_" + format;
+    std::wstring name = dkstd::time::get_time_as_string(L"%Y_%m_%d_%H_%M_%S");
+    if (prefix.length())
+        name = prefix + L"_" + name;
     if (ext.length())
-        format = format + L"." + ext;
-    return dkstd::time::get_time_as_string(format);
+        name = name + L"." + ext;
+    return name;
 }
 
 // format time to string

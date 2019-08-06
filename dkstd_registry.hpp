@@ -20,33 +20,33 @@ namespace dkstd
     {
         /* HKEY_CURRENT_USER */
         bool Read_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber);
-        bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber);
+        bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, const DWORD & dwNumber);
 
         bool Read_HKCU_Key(std::wstring sKey, std::wstring sValue, std::wstring & sData);
-        bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, std::wstring & sData);
+        bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, const std::wstring & sData);
 
         bool Read_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
-        bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
+        bool Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, const std::vector<uint8_t> & data);
 
         std::vector<std::wstring> EnumKey_HKCU_Key(std::wstring sKey);
         std::vector<std::wstring> EnumValue_HKCU_Key(std::wstring sKey);
 
         /* HKEY_LOCAL_MACHINE */
         bool Read_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber);
-        bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber);
+        bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, const DWORD & dwNumber);
 
         bool Read_HKLM_Key(std::wstring sKey, std::wstring sValue, std::wstring & sData);
-        bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, std::wstring & sData);
+        bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, const std::wstring & sData);
 
         bool Read_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
-        bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
+        bool Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, const std::vector<uint8_t> & data);
 
         std::vector<std::wstring> EnumKey_HKLM_Key(std::wstring sKey);
         std::vector<std::wstring> EnumValue_HKLM_Key(std::wstring sKey);
 
         /* Any key */
         bool ReadKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
-        bool SetKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data);
+        bool SetKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, const std::vector<uint8_t> & data);
         std::vector<std::wstring> EnumKey(HKEY hRootKey, std::wstring sKey);
         std::vector<std::wstring> EnumValue(HKEY hRootKey, std::wstring sKey);
 
@@ -70,7 +70,7 @@ inline bool dkstd::registry::Read_HKCU_Key(std::wstring sKey, std::wstring sValu
 }
 
 // KhiemDH - 2017-04-26
-inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber)
+inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue, const DWORD & dwNumber)
 {
     std::vector<uint8_t> buffer;
     buffer.resize(sizeof(DWORD));
@@ -91,7 +91,7 @@ inline bool dkstd::registry::Read_HKCU_Key(std::wstring sKey, std::wstring sValu
 }
 
 // KhiemDH - 2017-04-26
-inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue, std::wstring & sData)
+inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue, const std::wstring & sData)
 {
     std::vector<uint8_t> buffer;
     size_t size = sData.length() * sizeof(wchar_t);
@@ -109,7 +109,7 @@ inline bool dkstd::registry::Read_HKCU_Key(std::wstring sKey, std::wstring sValu
 
 // KhiemDH - 2017-04-26
 // Gán giá trị cho các key trong HKEY_CURRENT_USER
-inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data)
+inline bool dkstd::registry::Set_HKCU_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, const std::vector<uint8_t> & data)
 {
     return dkstd::registry::SetKey(HKEY_CURRENT_USER, sKey, sValue, dwType, data);
 }
@@ -142,7 +142,7 @@ inline bool dkstd::registry::Read_HKLM_Key(std::wstring sKey, std::wstring sValu
 }
 
 // KhiemDH - 2017-04-26
-inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD & dwNumber)
+inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, const DWORD & dwNumber)
 {
     std::vector<uint8_t> buffer;
     buffer.resize(sizeof(DWORD));
@@ -163,7 +163,7 @@ inline bool dkstd::registry::Read_HKLM_Key(std::wstring sKey, std::wstring sValu
 }
 
 // KhiemDH - 2017-04-26
-inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, std::wstring & sData)
+inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, const std::wstring & sData)
 {
     std::vector<uint8_t> buffer;
     size_t size = sData.length() * sizeof(wchar_t);
@@ -181,7 +181,7 @@ inline bool dkstd::registry::Read_HKLM_Key(std::wstring sKey, std::wstring sValu
 
 // KhiemDH - 2017-04-26
 // Gán giá trị cho các key trong HKEY_LOCAL_MACHINE
-inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data)
+inline bool dkstd::registry::Set_HKLM_Key(std::wstring sKey, std::wstring sValue, DWORD dwType, const std::vector<uint8_t> & data)
 {
     return dkstd::registry::SetKey(HKEY_LOCAL_MACHINE, sKey, sValue, dwType, data);
 }
@@ -244,7 +244,7 @@ inline bool dkstd::registry::ReadKey(HKEY hRootKey, std::wstring sKey, std::wstr
 // KhiemDH - 2018-07-27
 // Gán giá trị trong Registry
 // Nếu key chưa tồn tại thì tạo mới
-inline bool dkstd::registry::SetKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, std::vector<uint8_t> & data)
+inline bool dkstd::registry::SetKey(HKEY hRootKey, std::wstring sKey, std::wstring sValue, DWORD dwType, const std::vector<uint8_t> & data)
 {
     HKEY    hKey = NULL;
     LONG    lCreate = ERROR_SUCCESS;
