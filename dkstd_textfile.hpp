@@ -177,7 +177,7 @@ inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
     if (m_file.good())
     {
         m_file.seekg(0, std::fstream::end);
-        if (m_file.tellg() > 0)
+        if (m_file.tellg() > std::streampos(0))
         {
             m_file.seekg(0, std::fstream::beg);
             while (!m_file.eof())
