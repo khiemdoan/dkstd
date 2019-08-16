@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2016-07-06
-// modified:    2019-06-20
+// modified:    2019-08-16
 
 #pragma once
 
@@ -139,17 +139,15 @@ inline void dkstd::textfile::close()
 
 // write a line to end file
 // input: UTF-8 string
-// KhiemDH - 2018-05-15
+// KhiemDH - 2019-08-16
 template<typename ...Args>
 inline bool dkstd::textfile::write_line(std::string sContent)
 {
     if (!m_file.good())
-    {
         return false;
-    }
 
     m_file.seekp(0, std::fstream::end);
-    if (m_file.tellg() != 0)
+    if (m_file.tellg() != std::streampos(0))
     {
         sContent = "\n" + sContent;
     }
@@ -169,30 +167,30 @@ inline bool dkstd::textfile::write_line(std::wstring sContent)
 }
 
 // read file to std::vector
-// KhiemDH - 2018-05-15
+// KhiemDH - 2019-08-16
 inline std::vector<std::wstring> dkstd::textfile::get_all_lines()
 {
+    if (!m_file.good())
+        return std::vector<std::wstring>();
+
     std::vector<std::wstring>   vectorContents;
 
-    if (m_file.good())
+    m_file.seekg(0, std::fstream::end);
+    if (m_file.tellg() > std::streampos(0))
     {
-        m_file.seekg(0, std::fstream::end);
-        if (m_file.tellg() > std::streampos(0))
+        m_file.seekg(0, std::fstream::beg);
+        while (!m_file.eof())
         {
-            m_file.seekg(0, std::fstream::beg);
-            while (!m_file.eof())
+            std::string sLine;
+            std::getline(m_file, sLine);
+            if (sLine.length() > 0 && sLine.back() == '\r')
             {
-                std::string sLine;
-                std::getline(m_file, sLine);
-                if (sLine.length() > 0 && sLine.back() == '\r')
-                {
-                    sLine.pop_back();
-                }
-                vectorContents.emplace_back(dkstd::s2ws(sLine));
+                sLine.pop_back();
             }
+            vectorContents.emplace_back(dkstd::s2ws(sLine));
         }
-        m_file.clear();
     }
+    m_file.clear();
 
     return vectorContents;
 }
