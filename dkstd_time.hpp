@@ -1,7 +1,7 @@
 // author:      Khiêm Đoàn Hoà (KhiemDH)
 // github:      https://github.com/khiemdoan/dkstd
 // created:     2017-10-14
-// modified:    2019-08-05
+// modified:    2019-08-22
 
 #pragma once
 
@@ -73,18 +73,17 @@ inline std::tm dkstd::time::get_localtime() noexcept
 }
 
 // Convert std::time_t to std::tm
-// KhiemDH - 2019-08-03
+// KhiemDH - 2019-08-22
 inline std::tm dkstd::time::get_localtime(std::time_t time) noexcept
 {
     std::tm tm = { 0 };
     tm.tm_mday = 1;
-#ifdef _WIN32
-    localtime_s(&tm, &time);
-#else
-    localtime_r(&time, &tm);
-#endif
 
-    if (errno != 0)
+#ifdef _WIN32
+    if (localtime_s(&tm, &time) != 0)
+#else
+    if (localtime_r(&time, &tm) == nullptr)
+#endif
     {
         tm = { 0 };
         tm.tm_mday = 1;
