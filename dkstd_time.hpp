@@ -30,9 +30,16 @@ namespace dkstd
         std::tm get_localtime() noexcept;
         std::tm get_localtime(std::time_t time) noexcept;
 
+        std::string get_time_as_string(std::string format = "%Y-%m-%dT%H:%M:%S");
         std::wstring get_time_as_string(std::wstring format = L"%Y-%m-%dT%H:%M:%S");
+
+        std::string get_time_as_filename(std::string name = "", std::string ext = "");
         std::wstring get_time_as_filename(std::wstring name = L"", std::wstring ext = L"");
+
+        std::string time_to_string(std::time_t time, std::string format = "%Y-%m-%dT%H:%M:%S");
         std::wstring time_to_string(std::time_t time, std::wstring format = L"%Y-%m-%dT%H:%M:%S");
+
+        std::time_t string_to_time(std::string str, std::string format = "%Y-%m-%dT%H:%M:%S");
         std::time_t string_to_time(std::wstring str, std::wstring format = L"%Y-%m-%dT%H:%M:%S");
 
         void sleep_for_milliseconds(unsigned long milliseconds);
@@ -93,11 +100,29 @@ inline std::tm dkstd::time::get_localtime(std::time_t time) noexcept
 }
 
 // Use custom format to get string time
+// KhiemDH - 2020-05-11
+inline std::string dkstd::time::get_time_as_string(std::string format) {
+    const std::time_t time = dkstd::time::get_time();
+    return dkstd::time::time_to_string(time, format);
+}
+
+// Use custom format to get string time
 // KhiemDH - 2017-10-14
 inline std::wstring dkstd::time::get_time_as_string(std::wstring format)
 {
     const std::time_t time = dkstd::time::get_time();
     return dkstd::time::time_to_string(time, format);
+}
+
+// Get string to name a file with time
+// KhiemDH - 2020-05-11
+inline std::string dkstd::time::get_time_as_filename(std::string prefix, std::string ext) {
+    std::string name = dkstd::time::get_time_as_string("%Y_%m_%d_%H_%M_%S");
+    if (prefix.length())
+        name = prefix + "_" + name;
+    if (ext.length())
+        name = name + "." + ext;
+    return name;
 }
 
 // Get string to name a file with time
@@ -113,6 +138,15 @@ inline std::wstring dkstd::time::get_time_as_filename(std::wstring prefix, std::
 }
 
 // format time to string
+// KhiemDH - 2020-05-11
+inline std::string dkstd::time::time_to_string(std::time_t time, std::string format) {
+    std::tm tm = get_localtime(time);
+    std::stringstream ss;
+    ss << std::put_time(&tm, format.c_str());
+    return ss.str();
+}
+
+// format time to string
 // KhiemDH - 2019-08-03
 inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring format)
 {
@@ -120,6 +154,17 @@ inline std::wstring dkstd::time::time_to_string(std::time_t time, std::wstring f
     std::wstringstream ss;
     ss << std::put_time(&tm, format.c_str());
     return ss.str();
+}
+
+// convert std::string to std::time_t
+// return -1 if fail
+// KhiemDH - 2020-05-11
+inline std::time_t dkstd::time::string_to_time(std::string str, std::string format) {
+    std::stringstream ss;
+    std::tm tm_buf = { 0 };
+    ss << str;
+    ss >> std::get_time(&tm_buf, format.c_str());
+    return std::mktime(&tm_buf);
 }
 
 // convert std::string to std::time_t
