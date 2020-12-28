@@ -93,8 +93,12 @@ inline std::string dkstd::ws2s(std::wstring wstr)
     return dkstd::string::ws2s(wstr);
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4996)
+
 // convert std::string to std::wstring
 // KhiemDH - 2016-08-14
+// Please use utf8::utf8to16 (https://github.com/nemtrif/utfcpp)
 inline std::wstring dkstd::string::s2ws(std::string str)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
@@ -108,6 +112,7 @@ inline std::wstring dkstd::string::s2ws(std::string str)
 
 // convert std::wstring to std::string
 // KhiemDH - 2016-08-14
+// Please use utf8::utf16to8 (https://github.com/nemtrif/utfcpp)
 inline std::string dkstd::string::ws2s(std::wstring wstr)
 {
     using convert_type = std::codecvt_utf8<wchar_t>;
@@ -118,6 +123,8 @@ inline std::string dkstd::string::ws2s(std::wstring wstr)
     catch (std::range_error) {}
     return std::string();
 }
+
+#pragma warning(pop)
 
 // format string
 // KhiemDH - 2019-07-01
